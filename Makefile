@@ -1,4 +1,4 @@
-CFLAGS=-std=c++11 -lm -I/opt/X11/include -L/opt/X11/lib -lX11 -ljpeg -lpthread -w
+CFLAGS=-std=c++11 -g -lm -I/opt/X11/include -L/opt/X11/lib -lX11 -ljpeg -lpthread -w
 CXX=g++
 GCC=gcc 
 
@@ -8,4 +8,4 @@ CONVERT: serialConversion.cpp wavfile.c
 	$(CXX) $(CFLAGS) serialConversion.cpp wavfile.c -o CONVERT
 
 clean:
-	rm CONVERT
+	rm -rf CONVERT CONVERT.dSYM
