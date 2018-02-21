@@ -17,7 +17,7 @@ using namespace std;
 using namespace cimg_library;
 
 double brightness(CImg<double> img, int i, int j){
-	return (img(i, j, 0) + img(i, j, 1) + img(i, j, 2))/768.0f;
+	return (img(i, j, 0) + img(i, j, 1) + img(i, j, 2));
 }
 
 int main(int argc, char **argv){
@@ -50,7 +50,7 @@ int main(int argc, char **argv){
 
 	for(int j=0; j<input.width(); j++){
 		for (int k=0; k<input.height(); k++){
-			amplitudes[k] = brightness(input, j, k)/double(input.height());
+			amplitudes[k] = brightness(input, j, k);
 		}
 		for (int A=0; A<SAMPLERATE; A++){
 			double amp = 0.0f;
@@ -59,7 +59,9 @@ int main(int argc, char **argv){
 				amp += amplitudes[l] * sin(2*PI*frequencies[l]*double(A)*cycle/len);
 			}
 			audio[index++] = amp;
+			//cout<< amp << endl;
 		}
+
 	}
 	FILE * f = wavfile_open(argv[2]);
 	wavfile_write(f, audio, audioLength);
