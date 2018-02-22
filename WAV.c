@@ -20,7 +20,7 @@ struct wav_header {
 	int		data_length;
 };
 
-FILE *openWav(const char *filename ){
+FILE *openWav(const char *filename){
 	struct wav_header header;
 	strncpy(header.riff_tag,"RIFF",4);
 	strncpy(header.wave_tag,"WAVE",4);
