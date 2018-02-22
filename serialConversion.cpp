@@ -11,6 +11,7 @@
 #include <errno.h>
 
 #define PI 3.14159265358979323846264338327f
+#define FUNDAMENTAL 20
 
 using namespace std;
 using namespace cimg_library;
@@ -62,11 +63,10 @@ int main(int argc, char **argv){
 	double *amplitudes = new double[input.height()];
 	int *frequencies = new int[input.height()];
 	
-	int fundamental = 20;
 	int freq;
 
 	for (int i=0; i<input.height(); i++){
-		freq = fundamental * eScale(input.height(), i);
+		freq = FUNDAMENTAL * eScale(input.height(), i);
 		amplitudes[i] = 0.0f;
 		frequencies[input.height() - 1 - i] = freq;
 	}
