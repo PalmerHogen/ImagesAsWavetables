@@ -22,13 +22,13 @@ double brightness(CImg<double> img, int i, int j){
 }
 
 //Exponential Scaling between 1 and 1000 for startpoint 0 and endpoint h-1
-int eScale(int h, int i){
-	return i*i *1000 /(h*h) + 1;
+double eScale(int h, int i){
+	return double(i*i) * 1000.0f / double(h*h) + 1.0f;
 }
 
 //Linear Scaling between 1 and 1000 for startpoint 0 and endpoint h-1
 double lScale(int h, int i){
-	return double(i)*(1000.0f)/double(h) + 1.0f;
+	return double(i) * 1000.0f / double(h) + 1.0f;
 }
 
 int main(int argc, char **argv){
@@ -40,8 +40,10 @@ int main(int argc, char **argv){
 		cout << "Usage: ./CONVERT [image path] [output name] [timestep(ms)] [gain]"<<endl;
 		exit(2);
 	}
+
 	int timestep;
 	double gain;
+
 	if((timestep = atoi(argv[3])) < 10){
 		cout << "Must enter a timestep greater than 10 ms" <<endl;
 		exit(1);
@@ -52,13 +54,12 @@ int main(int argc, char **argv){
 	}	
 
 	//Number of samples devoted to each time step
-	int stepLength = int(double(SAMPLERATE * timestep) * 0.001f);
+	int stepLength = int(SAMPLERATE * timestep * 0.001f);
 
 	CImg<double> input(argv[1]);
 	//Optimizations: -----------------------------------------------
 	//Floating point division is slow; so I'll do these upfront
 	double invH = 1.0f / double(input.height());
-	double invS = 1.0f / double(SAMPLERATE);	
 	double invC = 1.0f / double(CYCLELENGTH);
 
 	//math.sin() is also slow
@@ -71,11 +72,13 @@ int main(int argc, char **argv){
 	double *frequencies = new double[input.height()];
 	
 	double freq;
+	//double FUNDAMENTAL = 20.0f;
 
 	for (int i=0; i<input.height(); i++){
-		freq = FUNDAMENTAL * lScale(input.height(), i);
+		freq = FUNDAMENTAL * eScale(input.height(), i);
 		amplitudes[i] = 0.0f;
 		frequencies[input.height() - 1 - i] = freq;
+		cout << freq << endl;
 	}
 
 	//Intermediate audio-write buffer
@@ -89,9 +92,9 @@ int main(int argc, char **argv){
 		}
 		for (int A=0; A<stepLength; A++){
 			double spl = 0.0f;
-			double pos = j * stepLength + A;
+			long pos = j * stepLength + A;
 			for (int l=0; l<input.height(); l++){
-				spl += amplitudes[l]*sine[int(frequencies[l]*pos)%CYCLELENGTH]; 
+				spl += amplitudes[l]*sine[long(frequencies[l]*pos)%CYCLELENGTH]; 
 			}
 			audioBuffer[A] = spl;
 		}
