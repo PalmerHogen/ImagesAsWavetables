@@ -27,7 +27,6 @@ int main(int argc, char **argv){
 		exit(2);
 	}
 
-	//CImg<double> input(argv[1]);
 	CImg<double> input(argv[1]);
 
 	double *amplitudes = new double[input.height()];
@@ -46,7 +45,6 @@ int main(int argc, char **argv){
 	int audioLength = input.width() * SAMPLERATE;
 	double len = double(audioLength);
 
-	//double *audio = new double[audioLength];
 	short *audio = new short[audioLength];
 	int index = 0;
 
@@ -61,7 +59,6 @@ int main(int argc, char **argv){
 				amp += amplitudes[l] * sin(2*PI*frequencies[l]*cycle);
 			}
 			audio[index++] = amp;
-			//cout<< amp << endl;
 		}
 
 	}
@@ -71,6 +68,6 @@ int main(int argc, char **argv){
 
 	delete amplitudes;
 	delete frequencies;
-	delete audio; 
+	delete audio;
 	return 0;
 }
