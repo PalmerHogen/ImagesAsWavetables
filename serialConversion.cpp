@@ -23,11 +23,16 @@ double brightness(CImg<double> img, int i, int j){
 
 //Exponential Scaling between 1 and 1000 for startpoint 0 and endpoint h-1
 int eScale(int h, int i){
-	//return int(1000.0f/double(h*h) * double(i*i) + 1.0f);
 	return i*i *1000 /(h*h) + 1;
 }
 
+//Linear Scaling between 1 and 1000 for startpoint 0 and endpoint h-1
+int lScale(int h, int i){
+	return i*1000/h + 1;
+}
+
 int main(int argc, char **argv){
+	int CYCLELENGTH = SAMPLERATE;
 
 	//Retrieve user input
 	int Z = 0;
@@ -54,11 +59,12 @@ int main(int argc, char **argv){
 	//Floating point division is slow; so I'll do these upfront
 	double invH = 1.0f / double(input.height());
 	double invS = 1.0f / double(SAMPLERATE);	
+	double invC = 1.0f / double(CYCLELENGTH);
 
 	//math.sin() is also slow
-	double *sine = new double[SAMPLERATE];
-	for (int b=0; b<SAMPLERATE; b++){
-		sine[b] = sin(2*PI*b*invS);
+	double *sine = new double[CYCLELENGTH];
+	for (int b=0; b<CYCLELENGTH; b++){
+		sine[b] = sin(2*PI*b*invC);
 	}
 	//--------------------------------------------------------------
 	double *amplitudes = new double[input.height()];
@@ -67,7 +73,7 @@ int main(int argc, char **argv){
 	int freq;
 
 	for (int i=0; i<input.height(); i++){
-		freq = FUNDAMENTAL * eScale(input.height(), i);
+		freq = FUNDAMENTAL * lScale(input.height(), i);
 		amplitudes[i] = 0.0f;
 		frequencies[input.height() - 1 - i] = freq;
 	}
@@ -85,7 +91,7 @@ int main(int argc, char **argv){
 			double spl = 0.0f;
 			long pos = j * stepLength + A;
 			for (int l=0; l<input.height(); l++){
-				spl += amplitudes[l]*sine[frequencies[l]*pos%SAMPLERATE]; 
+				spl += amplitudes[l]*sine[(frequencies[l]*pos)%CYCLELENGTH]; 
 			}
 			audioBuffer[A] = spl;
 		}
