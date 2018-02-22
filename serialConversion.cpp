@@ -26,7 +26,6 @@ double eScale(int h, int i){
 }
 
 int main(int argc, char **argv){
-	int SAMPLERATE = SAMPLES_PER_SECOND;
 
 	//Retrieve user input
 	int Z = 0;
