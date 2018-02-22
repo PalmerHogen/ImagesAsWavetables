@@ -42,7 +42,7 @@ int main(int argc, char **argv){
 		exit(1);
 	}
 	if((gain = atof(argv[4])) <= 0.0f){
-		cout << "Must enter a non-zero gain" << endl;
+		cout << "Must enter a positive gain" << endl;
 		exit(1);
 	}	
 
