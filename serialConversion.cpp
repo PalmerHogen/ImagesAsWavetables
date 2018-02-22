@@ -17,7 +17,7 @@ using namespace std;
 using namespace cimg_library;
 
 double brightness(CImg<double> img, int i, int j){
-	return (img(i, j, 0) + img(i, j, 1) + img(i, j, 2));
+	return (img(i, j, 0) + img(i, j, 1) + img(i, j, 2))*1.3f;
 }
 
 double T(int h, int i){
@@ -26,18 +26,27 @@ double T(int h, int i){
 
 int main(int argc, char **argv){
 	int Z = 0;
-	if (argc < 4){
-		cout << "Usage: ./CONVERT [image path] [output name] [timestep(ms)]"<<endl;
+	if (argc < 5){
+		cout << "Usage: ./CONVERT [image path] [output name] [timestep(ms)] [gain]"<<endl;
 		exit(2);
 	}
 	int timestep;
+	double gain;
 	if((timestep = atoi(argv[3])) < 10){
 		cout << "Must enter a timestep greater than 10 ms" <<endl;
+		exit(1);
+	}
+
+	if((gain = atof(argv[4])) <= 0.0f){
+		cout << "Must enter a non-zero gain" << endl;
 		exit(1);
 	}
 	double fract = double(timestep) * 0.001f;	
 
 	CImg<double> input(argv[1]);
+	//Floating point division is slow; so I'll do these upfront
+	double invH = 1.0f / double(input.height());
+	double invS = 1.0f / double(SAMPLERATE);	
 
 	double *amplitudes = new double[input.height()];
 	double *frequencies = new double[input.height()];
@@ -59,11 +68,11 @@ int main(int argc, char **argv){
 
 	for(int j=0; j<(input.width()); j++){
 		for (int k=0; k<input.height(); k++){
-			amplitudes[k] = brightness(input, j, k);
+			amplitudes[k] = brightness(input, j, k)*gain*invH;
 		}
 		for (int A=0; A<(SAMPLERATE*fract); A++){
 			double amp = 0.0f;
-			double cycle = double(index) / double(SAMPLERATE);
+			double cycle = double(index) * invS;
 			for (int l=0; l<input.height(); l++){
 				amp += amplitudes[l] * sin(2.0f*PI*frequencies[l]*cycle);
 			}
