@@ -47,7 +47,7 @@ int main(int argc, char **argv){
 	}	
 
 	//Number of samples devoted to each time step
-	int stepLength = int(SAMPLERATE * double(timestep) * 0.001f);
+	int stepLength = int(double(SAMPLERATE * timestep) * 0.001f);
 
 	CImg<double> input(argv[1]);
 	//Optimizations: -----------------------------------------------
