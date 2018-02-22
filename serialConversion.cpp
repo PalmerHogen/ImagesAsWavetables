@@ -58,7 +58,7 @@ int main(int argc, char **argv){
 			double amp = 0.0f;
 			double cycle = double(index) / double(SAMPLERATE);
 			for (int l=0; l<input.height(); l++){
-				amp += amplitudes[l] * sin(2*PI*frequencies[l]*double(A)*cycle/len);
+				amp += amplitudes[l] * sin(2*PI*frequencies[l]*cycle);
 			}
 			audio[index++] = amp;
 			//cout<< amp << endl;
