@@ -53,9 +53,9 @@ int main(int argc, char **argv){
 	double invS = 1.0f / double(SAMPLERATE);	
 
 	//math.sin() is also slow
-	double *sinu = new double[SAMPLERATE];
+	double *sine = new double[SAMPLERATE];
 	for (int b=0; b<SAMPLERATE; b++){
-		sinu[b] = sin(2*PI*b*invS);
+		sine[b] = sin(2*PI*b*invS);
 	}
 	//--------------------------------------------------------------
 	double *amplitudes = new double[input.height()];
@@ -83,7 +83,7 @@ int main(int argc, char **argv){
 			double spl = 0.0f;
 			long pos = j * stepLength + A;
 			for (int l=0; l<input.height(); l++){
-				spl += amplitudes[l]*sinu[long(frequencies[l])*pos%SAMPLERATE]; 
+				spl += amplitudes[l]*sine[long(frequencies[l])*pos%SAMPLERATE]; 
 			}
 			audioBuffer[A] = spl;
 		}
