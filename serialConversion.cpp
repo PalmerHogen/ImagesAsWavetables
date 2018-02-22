@@ -61,7 +61,7 @@ int main(int argc, char **argv){
 	double *amplitudes = new double[input.height()];
 	double *frequencies = new double[input.height()];
 	
-	double fundamental = 20.0f;
+	double fundamental = 20;
 	double freq;
 
 	for (int i=0; i<input.height(); i++){
@@ -71,7 +71,7 @@ int main(int argc, char **argv){
 	}
 
 	//Intermediate audio-write buffer
-	short *audio = new short[stepLength];
+	short *audioBuffer = new short[stepLength];
 
 	FILE *f = openWav(argv[2]);
 
@@ -80,22 +80,22 @@ int main(int argc, char **argv){
 			amplitudes[k] = brightness(input, j, k)*gain*invH;
 		}
 		for (int A=0; A<stepLength; A++){
-			double amp = 0.0f;
-			double pos = j * stepLength + A;
+			double spl = 0.0f;
+			long pos = j * stepLength + A;
 			for (int l=0; l<input.height(); l++){
-				amp += amplitudes[l]*sinu[int(frequencies[l]*pos)%SAMPLERATE]; 
+				spl += amplitudes[l]*sinu[long(frequencies[l])*pos%SAMPLERATE]; 
 			}
-			audio[A] = amp;
+			audioBuffer[A] = spl;
 		}
 		//write intermediate results
-		writeWav(f, audio, stepLength);
+		writeWav(f, audioBuffer, stepLength);
 
 	}
 	closeWav(f);
 
 	delete amplitudes;
 	delete frequencies;
-	delete audio;
+	delete audioBuffer;
 	delete sinu;
 	return 0;
 }
