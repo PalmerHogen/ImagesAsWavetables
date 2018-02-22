@@ -78,7 +78,6 @@ int main(int argc, char **argv){
 		freq = FUNDAMENTAL * eScale(input.height(), i);
 		amplitudes[i] = 0.0f;
 		frequencies[input.height() - 1 - i] = freq;
-		cout << freq << endl;
 	}
 
 	//Intermediate audio-write buffer
