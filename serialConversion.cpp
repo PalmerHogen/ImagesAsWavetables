@@ -1,6 +1,6 @@
 #define cimg_use_jpeg
 #include "CImg.h"
-#include "wavfile.h"
+#include "WAV.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <iostream>
@@ -10,21 +10,24 @@
 #include <string.h>
 #include <errno.h>
 
-#define SAMPLERATE 44100
 #define PI 3.14159265358979323846264338327f
 
 using namespace std;
 using namespace cimg_library;
 
+//Pixel Brightness, in range 0-1000
 double brightness(CImg<double> img, int i, int j){
 	return (img(i, j, 0) + img(i, j, 1) + img(i, j, 2))*1.3f;
 }
 
+//Exponential Scaling between 1 and 1000 for startpoint 0 and endpoint h-1
 double T(int h, int i){
 	return 1000.0f/double(h*h) * double(i*i) + 1.0f;
 }
 
 int main(int argc, char **argv){
+	int SAMPLERATE = SAMPLES_PER_SECOND;
+
 	int Z = 0;
 	if (argc < 5){
 		cout << "Usage: ./CONVERT [image path] [output name] [timestep(ms)] [gain]"<<endl;
@@ -36,14 +39,15 @@ int main(int argc, char **argv){
 		cout << "Must enter a timestep greater than 10 ms" <<endl;
 		exit(1);
 	}
-
 	if((gain = atof(argv[4])) <= 0.0f){
 		cout << "Must enter a non-zero gain" << endl;
 		exit(1);
-	}
-	double fract = double(timestep) * 0.001f;	
+	}	
+
+	int stepLength = int(SAMPLERATE * double(timestep) * 0.001f);
 
 	CImg<double> input(argv[1]);
+	//Optimizations: -----------------------------------------------
 	//Floating point division is slow; so I'll do these upfront
 	double invH = 1.0f / double(input.height());
 	double invS = 1.0f / double(SAMPLERATE);	
@@ -53,7 +57,7 @@ int main(int argc, char **argv){
 	for (int b=0; b<SAMPLERATE; b++){
 		sinu[b] = sin(2*PI*b*invS);
 	}
-
+	//--------------------------------------------------------------
 	double *amplitudes = new double[input.height()];
 	double *frequencies = new double[input.height()];
 	
@@ -66,28 +70,28 @@ int main(int argc, char **argv){
 		frequencies[input.height() - 1 - i] = freq;
 	}
 
-	int audioLength = input.width() * SAMPLERATE * fract;
-	double len = double(audioLength);
+	//Intermediate audio-write buffer
+	short *audio = new short[stepLength];
 
-	short *audio = new short[audioLength];
-	int index = 0;
+	FILE *f = openWav(argv[2]);
 
 	for(int j=0; j<(input.width()); j++){
 		for (int k=0; k<input.height(); k++){
 			amplitudes[k] = brightness(input, j, k)*gain*invH;
 		}
-		for (int A=0; A<(SAMPLERATE*fract); A++){
+		for (int A=0; A<stepLength; A++){
 			double amp = 0.0f;
+			double pos = j * stepLength + A;
 			for (int l=0; l<input.height(); l++){
-				amp += amplitudes[l]*sinu[int(frequencies[l]*index)%SAMPLERATE]; 
+				amp += amplitudes[l]*sinu[int(frequencies[l]*pos)%SAMPLERATE]; 
 			}
-			audio[index++] = amp;
+			audio[A] = amp;
 		}
+		//write intermediate results
+		writeWav(f, audio, stepLength);
 
 	}
-	FILE * f = wavfile_open(argv[2]);
-	wavfile_write(f, audio, audioLength);
-	wavfile_close(f);
+	closeWav(f);
 
 	delete amplitudes;
 	delete frequencies;
