@@ -24,6 +24,7 @@ double brightness(CImg<double> img, int i, int j){
 double T(int h, int i){
 	//return 1000.0f/double(h*h) * double(i*i) + 1.0f;
 	return 1000.0f/(h*h) * (i*i) + 1;
+	//return 1000.0f/h * i + 1;
 }
 
 int main(int argc, char **argv){
@@ -87,7 +88,7 @@ int main(int argc, char **argv){
 			double spl = 0.0f;
 			long pos = j * numSamples + A;
 			for (int l=0; l<numParts; l++){
-				spl += amplitudes[l]*sinu[frequencies[l]*pos%SAMPLERATE]; 
+				spl += amplitudes[l]*sinu[(frequencies[l]*pos)%SAMPLERATE]; 
 			}
 			audioBuffer[A] = spl;
 		}
