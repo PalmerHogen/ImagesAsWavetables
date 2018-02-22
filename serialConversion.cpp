@@ -23,7 +23,8 @@ double brightness(CImg<double> img, int i, int j){
 
 //Exponential Scaling between 1 and 1000 for startpoint 0 and endpoint h-1
 int eScale(int h, int i){
-	return int(1000.0f/double(h*h) * double(i*i) + 1.0f);
+	//return int(1000.0f/double(h*h) * double(i*i) + 1.0f);
+	return i*i *1000 /(h*h) + 1;
 }
 
 int main(int argc, char **argv){
