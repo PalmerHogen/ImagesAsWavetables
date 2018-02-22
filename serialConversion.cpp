@@ -81,13 +81,13 @@ int main(int argc, char **argv){
 	for(int j=0; j<(input.width()); j++){
 		for (int k=0; k<numParts; k++){
 			amplitudes[k] = brightness(input, j, k)*gain*invH;
-            cout << amplitudes[k] << endl;
+            //cout << amplitudes[k] << endl;
 		}
 		for (int A=0; A<numSamples; A++){
 			double spl = 0.0f;
 			long pos = j * numSamples + A;
 			for (int l=0; l<numParts; l++){
-				spl += amplitudes[l]*sinu[long(frequencies[l])*pos%SAMPLERATE]; 
+				spl += amplitudes[l]*sinu[frequencies[l]*pos%SAMPLERATE]; 
 			}
 			audioBuffer[A] = spl;
 		}
