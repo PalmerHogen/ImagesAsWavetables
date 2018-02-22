@@ -21,13 +21,14 @@ double brightness(CImg<double> img, int i, int j){
 }
 
 //Exponential Scaling between 1 and 1000 for startpoint 0 and endpoint h-1
-double T(int h, int i){
+double eScale(int h, int i){
 	return 1000.0f/double(h*h) * double(i*i) + 1.0f;
 }
 
 int main(int argc, char **argv){
 	int SAMPLERATE = SAMPLES_PER_SECOND;
 
+	//Retrieve user input
 	int Z = 0;
 	if (argc < 5){
 		cout << "Usage: ./CONVERT [image path] [output name] [timestep(ms)] [gain]"<<endl;
@@ -44,6 +45,7 @@ int main(int argc, char **argv){
 		exit(1);
 	}	
 
+	//Number of samples devoted to each time step
 	int stepLength = int(SAMPLERATE * double(timestep) * 0.001f);
 
 	CImg<double> input(argv[1]);
@@ -61,11 +63,11 @@ int main(int argc, char **argv){
 	double *amplitudes = new double[input.height()];
 	double *frequencies = new double[input.height()];
 	
-	double fundamental = 20;
+	double fundamental = 20.0f;
 	double freq;
 
 	for (int i=0; i<input.height(); i++){
-		freq = fundamental * T(input.height(), i);
+		freq = fundamental * eScale(input.height(), i);
 		amplitudes[i] = 0.0f;
 		frequencies[input.height() - 1 - i] = freq;
 	}
@@ -89,7 +91,6 @@ int main(int argc, char **argv){
 		}
 		//write intermediate results
 		writeWav(f, audioBuffer, stepLength);
-
 	}
 	closeWav(f);
 
