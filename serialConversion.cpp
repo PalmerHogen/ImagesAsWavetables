@@ -20,43 +20,52 @@ double brightness(CImg<double> img, int i, int j){
 	return (img(i, j, 0) + img(i, j, 1) + img(i, j, 2));
 }
 
+double T(int h, int i){
+	return 1000.0f/double(h*h) * double(i*i) + 1.0f;
+}
+
 int main(int argc, char **argv){
 	int Z = 0;
-	if (argc < 3){
-		cout << "Usage: ./CONVERT [image path] [output name]"<<endl;
+	if (argc < 4){
+		cout << "Usage: ./CONVERT [image path] [output name] [timestep(ms)]"<<endl;
 		exit(2);
 	}
+	int timestep;
+	if((timestep = atoi(argv[3])) < 10){
+		cout << "Must enter a timestep greater than 10 ms" <<endl;
+		exit(1);
+	}
+	double fract = double(timestep) * 0.001f;	
 
 	CImg<double> input(argv[1]);
 
 	double *amplitudes = new double[input.height()];
 	double *frequencies = new double[input.height()];
-
-	double freq = 20.0f;
-	double step = 1000.0f * exp(1.0f / double(input.height()));
-
+	
+	double fundamental = 20.0f;
+	double freq;
 
 	for (int i=0; i<input.height(); i++){
+		freq = fundamental * T(input.height(), i);
 		amplitudes[i] = 0.0f;
-		frequencies[i] = freq;
-		freq *= step;
+		frequencies[input.height() - 1 - i] = freq;
 	}
 
-	int audioLength = input.width() * SAMPLERATE;
+	int audioLength = input.width() * SAMPLERATE * fract;
 	double len = double(audioLength);
 
 	short *audio = new short[audioLength];
 	int index = 0;
 
-	for(int j=0; j<input.width(); j++){
+	for(int j=0; j<(input.width()); j++){
 		for (int k=0; k<input.height(); k++){
 			amplitudes[k] = brightness(input, j, k);
 		}
-		for (int A=0; A<SAMPLERATE; A++){
+		for (int A=0; A<(SAMPLERATE*fract); A++){
 			double amp = 0.0f;
 			double cycle = double(index) / double(SAMPLERATE);
 			for (int l=0; l<input.height(); l++){
-				amp += amplitudes[l] * sin(2*PI*frequencies[l]*cycle);
+				amp += amplitudes[l] * sin(2.0f*PI*frequencies[l]*cycle);
 			}
 			audio[index++] = amp;
 		}
