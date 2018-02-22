@@ -11,7 +11,7 @@
 #include <errno.h>
 
 #define PI 3.14159265358979323846264338327f
-#define FUNDAMENTAL 20
+#define FUNDAMENTAL 20.0f
 
 using namespace std;
 using namespace cimg_library;
@@ -27,8 +27,8 @@ int eScale(int h, int i){
 }
 
 //Linear Scaling between 1 and 1000 for startpoint 0 and endpoint h-1
-int lScale(int h, int i){
-	return i*1000/h + 1;
+double lScale(int h, int i){
+	return double(i)*(1000.0f)/double(h) + 1.0f;
 }
 
 int main(int argc, char **argv){
@@ -68,9 +68,9 @@ int main(int argc, char **argv){
 	}
 	//--------------------------------------------------------------
 	double *amplitudes = new double[input.height()];
-	int *frequencies = new int[input.height()];
+	double *frequencies = new double[input.height()];
 	
-	int freq;
+	double freq;
 
 	for (int i=0; i<input.height(); i++){
 		freq = FUNDAMENTAL * lScale(input.height(), i);
@@ -89,9 +89,9 @@ int main(int argc, char **argv){
 		}
 		for (int A=0; A<stepLength; A++){
 			double spl = 0.0f;
-			long pos = j * stepLength + A;
+			double pos = j * stepLength + A;
 			for (int l=0; l<input.height(); l++){
-				spl += amplitudes[l]*sine[(frequencies[l]*pos)%CYCLELENGTH]; 
+				spl += amplitudes[l]*sine[int(frequencies[l]*pos)%CYCLELENGTH]; 
 			}
 			audioBuffer[A] = spl;
 		}
