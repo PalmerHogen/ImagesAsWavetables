@@ -96,6 +96,6 @@ int main(int argc, char **argv){
 	delete amplitudes;
 	delete frequencies;
 	delete audioBuffer;
-	delete sinu;
+	delete sine;
 	return 0;
 }
