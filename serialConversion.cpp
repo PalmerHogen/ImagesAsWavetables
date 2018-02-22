@@ -21,8 +21,8 @@ double brightness(CImg<double> img, int i, int j){
 }
 
 //Exponential Scaling between 1 and 1000 for startpoint 0 and endpoint h-1
-double eScale(int h, int i){
-	return 1000.0f/double(h*h) * double(i*i) + 1.0f;
+int eScale(int h, int i){
+	return int(1000.0f/double(h*h) * double(i*i) + 1.0f);
 }
 
 int main(int argc, char **argv){
@@ -60,10 +60,10 @@ int main(int argc, char **argv){
 	}
 	//--------------------------------------------------------------
 	double *amplitudes = new double[input.height()];
-	double *frequencies = new double[input.height()];
+	int *frequencies = new int[input.height()];
 	
-	double fundamental = 20.0f;
-	double freq;
+	int fundamental = 20;
+	int freq;
 
 	for (int i=0; i<input.height(); i++){
 		freq = fundamental * eScale(input.height(), i);
@@ -84,7 +84,7 @@ int main(int argc, char **argv){
 			double spl = 0.0f;
 			long pos = j * stepLength + A;
 			for (int l=0; l<input.height(); l++){
-				spl += amplitudes[l]*sine[long(frequencies[l])*pos%SAMPLERATE]; 
+				spl += amplitudes[l]*sine[frequencies[l]*pos%SAMPLERATE]; 
 			}
 			audioBuffer[A] = spl;
 		}
