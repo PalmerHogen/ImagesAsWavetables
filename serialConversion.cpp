@@ -48,6 +48,12 @@ int main(int argc, char **argv){
 	double invH = 1.0f / double(input.height());
 	double invS = 1.0f / double(SAMPLERATE);	
 
+	//math.sin() is also slow
+	double *sinu = new double[SAMPLERATE];
+	for (int b=0; b<SAMPLERATE; b++){
+		sinu[b] = sin(2*PI*b*invS);
+	}
+
 	double *amplitudes = new double[input.height()];
 	double *frequencies = new double[input.height()];
 	
@@ -72,9 +78,8 @@ int main(int argc, char **argv){
 		}
 		for (int A=0; A<(SAMPLERATE*fract); A++){
 			double amp = 0.0f;
-			double cycle = double(index) * invS;
 			for (int l=0; l<input.height(); l++){
-				amp += amplitudes[l] * sin(2.0f*PI*frequencies[l]*cycle);
+				amp += amplitudes[l]*sinu[int(frequencies[l]*index)%SAMPLERATE]; 
 			}
 			audio[index++] = amp;
 		}
@@ -87,5 +92,6 @@ int main(int argc, char **argv){
 	delete amplitudes;
 	delete frequencies;
 	delete audio;
+	delete sinu;
 	return 0;
 }
