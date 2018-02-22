@@ -1,0 +1,4 @@
+*.dSYM
+CONVERT
+*.o
+*.swp
