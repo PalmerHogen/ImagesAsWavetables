@@ -22,7 +22,8 @@ double brightness(CImg<double> img, int i, int j){
 
 //Exponential Scaling between 1 and 1000 for startpoint 0 and endpoint h-1
 double T(int h, int i){
-	return 1000.0f/double(h*h) * double(i*i) + 1.0f;
+	//return 1000.0f/double(h*h) * double(i*i) + 1.0f;
+	return 1000.0f/(h*h) * (i*i) + 1;
 }
 
 int main(int argc, char **argv){
@@ -43,14 +44,15 @@ int main(int argc, char **argv){
 		cout << "Must enter a non-zero gain" << endl;
 		exit(1);
 	}	
-
-	int stepLength = int(SAMPLERATE * double(timestep) * 0.001f);
-
 	CImg<double> input(argv[1]);
+
+	int numSamples = (SAMPLERATE * timestep) / 1000;
+    int numParts = input.height();
+
 	//Optimizations: -----------------------------------------------
 	//Floating point division is slow; so I'll do these upfront
-	double invH = 1.0f / double(input.height());
-	double invS = 1.0f / double(SAMPLERATE);	
+	double invH = 1.0f / numParts;
+	double invS = 1.0f / SAMPLERATE;	
 
 	//math.sin() is also slow
 	double *sinu = new double[SAMPLERATE];
@@ -58,37 +60,39 @@ int main(int argc, char **argv){
 		sinu[b] = sin(2*PI*b*invS);
 	}
 	//--------------------------------------------------------------
-	double *amplitudes = new double[input.height()];
-	double *frequencies = new double[input.height()];
+	double *amplitudes = new double[numParts];
+	int *frequencies = new int[numParts]; // each value in [20, 20000]
 	
-	double fundamental = 20;
-	double freq;
+	int fundamental = 20;
+	int freq;
 
-	for (int i=0; i<input.height(); i++){
-		freq = fundamental * T(input.height(), i);
+	for (int i=0; i<numParts; i++){
+		freq = fundamental * T(numParts, i);
 		amplitudes[i] = 0.0f;
-		frequencies[input.height() - 1 - i] = freq;
+		frequencies[numParts - 1 - i] = freq;
+        //cout << freq << endl;
 	}
 
 	//Intermediate audio-write buffer
-	short *audioBuffer = new short[stepLength];
+	short *audioBuffer = new short[numSamples];
 
 	FILE *f = openWav(argv[2]);
 
 	for(int j=0; j<(input.width()); j++){
-		for (int k=0; k<input.height(); k++){
+		for (int k=0; k<numParts; k++){
 			amplitudes[k] = brightness(input, j, k)*gain*invH;
+            cout << amplitudes[k] << endl;
 		}
-		for (int A=0; A<stepLength; A++){
+		for (int A=0; A<numSamples; A++){
 			double spl = 0.0f;
-			long pos = j * stepLength + A;
-			for (int l=0; l<input.height(); l++){
+			long pos = j * numSamples + A;
+			for (int l=0; l<numParts; l++){
 				spl += amplitudes[l]*sinu[long(frequencies[l])*pos%SAMPLERATE]; 
 			}
 			audioBuffer[A] = spl;
 		}
 		//write intermediate results
-		writeWav(f, audioBuffer, stepLength);
+		writeWav(f, audioBuffer, numSamples);
 
 	}
 	closeWav(f);
