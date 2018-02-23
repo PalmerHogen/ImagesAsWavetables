@@ -20,7 +20,7 @@ struct wav_header {
 	int		data_length;
 };
 
-FILE *openWav(const char *filename ){
+FILE *openWav(const char *filename){
 	struct wav_header header;
 	strncpy(header.riff_tag,"RIFF",4);
 	strncpy(header.wave_tag,"WAVE",4);
@@ -30,8 +30,8 @@ FILE *openWav(const char *filename ){
 	header.fmt_length = 16;
 	header.audio_format = 1;
 	header.num_channels = 1;
-	header.sample_rate = SAMPLES_PER_SECOND;
-	header.byte_rate = SAMPLES_PER_SECOND*(BITS_PER_SAMPLE/8);
+	header.sample_rate = SAMPLERATE;
+	header.byte_rate = SAMPLERATE*(BITS_PER_SAMPLE/8);
 	header.block_align = BITS_PER_SAMPLE/8;
 	header.bits_per_sample = BITS_PER_SAMPLE;
 	header.data_length = 0;
