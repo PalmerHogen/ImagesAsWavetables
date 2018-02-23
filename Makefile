@@ -4,8 +4,8 @@ GCC=gcc
 
 default: CONVERT
 
-CONVERT: serialConversion.cpp WAV.c
-	$(CXX) $(CFLAGS) serialConversion.cpp WAV.c -o CONVERT
+CONVERT: serialConversion.cpp WAV.c Wavetable.cpp Wavetable.h
+	$(CXX) $(CFLAGS) serialConversion.cpp WAV.c Wavetable.cpp -o CONVERT 
 
 clean:
 	rm -rf CONVERT CONVERT.dSYM
