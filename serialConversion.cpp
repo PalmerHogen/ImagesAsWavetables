@@ -45,7 +45,7 @@ int main(int argc, char **argv){
 		cout << "Must enter a non-zero gain" << endl;
 		exit(1);
 	}	
-	CImg<double> input(argv[1]);
+	CImg<unsigned int> input(argv[1]);
 
 	int numSamples = (SAMPLERATE * timestep) / 1000;
     int numParts = input.height();
@@ -78,8 +78,22 @@ int main(int argc, char **argv){
 	short *audioBuffer = new short[numSamples];
 
 	FILE *f = openWav(argv[2]);
+    int progress_thresh=input.width()/100+1;
+    cout << "[";
+    for (int i = 0; i < 100; i++) {
+        cout << ' ';
+    }
+    cout << "]\b";
+    for (int i = 0; i < 100; i++) {
+        cout << '\b';
+    }
+    cout.flush(); 
 
 	for(int j=0; j<(input.width()); j++){
+        if (j % progress_thresh == 0) {
+            cout << ".";
+            cout.flush();
+        }
 		for (int k=0; k<numParts; k++){
 			amplitudes[k] = brightness(input, j, k)*gain*invH;
             //cout << amplitudes[k] << endl;
@@ -96,6 +110,7 @@ int main(int argc, char **argv){
 		writeWav(f, audioBuffer, numSamples);
 
 	}
+    cout << endl;
 	closeWav(f);
 
 	delete amplitudes;
