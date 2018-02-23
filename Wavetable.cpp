@@ -4,8 +4,11 @@ using namespace std;
 using namespace cimg_library;
 
 //Pixel Brightness, in range 0-1000
-double Wavetable::brightness(CImg<unsigned int> img, int i, int j){
-	return (img(i, j, 0) + img(i, j, 1) + img(i, j, 2))*1.3f;
+double Wavetable::brightness(int i, int j){
+    int r_index = w * j + i + r_offset;
+    int g_index = w * j + i + g_offset;
+    int b_index = w * j + i + b_offset;
+	return (img_data[r_index] + img_data[b_index] + img_data[g_index])*1.3f;
 }
 
 //Exponential Scaling between 1 and 1000 for startpoint 0 and endpoint h-1
@@ -17,13 +20,22 @@ double Wavetable::lfScale(int h, int i){
 	return 999.0f/h*i+1;
 }
 
-Wavetable::Wavetable(int timestep, double gain, CImg<unsigned int> image) {
+Wavetable::Wavetable(int timestep, double gain, CImg<unsigned char> image) {
     this->cycle_length = SAMPLERATE;
     this->timestep = timestep;
     this->image = image;
     this->gain = gain;
     this->buffer_length = (SAMPLERATE * timestep) / 1000;
     this->bandCount = image.height();
+
+    this->img_data = image.data();
+    this->w = image.width();
+    this->h = image.height();
+    this->size = image.size();
+    this->r_offset = 0;
+    this->g_offset = w*h;
+    this->b_offset = 2*w*h;
+
     //Optimizations: -----------------------------------------------
 	//Floating point division is slow; so I'll do these upfront
 	this->invH = 1.0f / bandCount;
@@ -65,11 +77,12 @@ void Wavetable::writeAudio(char *path) {
 
  	for(int j=0; j<(image.width()); j++){
         if (j % progress_thresh == 0) {
-            cout << ".]\b";
+            //cout << ".]\b";
+            cout << j << "]\b";
             cout.flush();
         }
 		for (int k=0; k<bandCount; k++){
-			amplitudes[k] = brightness(image, j, k)*gain*invH;
+			amplitudes[k] = brightness(j, k)*gain*invH;
 		}
 		for (int A=0; A<buffer_length; A++){
 			double spl = 0.0f;
