@@ -9,6 +9,7 @@ double Wavetable::brightness(int i, int j){
     int g_index = w * j + i + g_offset;
     int b_index = w * j + i + b_offset;
 	return (img_data[r_index] + img_data[b_index] + img_data[g_index])*1.3f;
+	//return (img_data[r_index])*3.9f;
 }
 
 //Exponential Scaling between 1 and 1000 for startpoint 0 and endpoint h-1
@@ -77,8 +78,8 @@ void Wavetable::writeAudio(char *path) {
 
  	for(int j=0; j<(image.width()); j++){
         if (j % progress_thresh == 0) {
-            //cout << ".]\b";
-            cout << j << "]\b";
+            cout << ".]\b";
+            //cout << j << " ]\b";
             cout.flush();
         }
 		for (int k=0; k<bandCount; k++){
