@@ -39,10 +39,10 @@ Wavetable::Wavetable(int timestep, double gain, CImg<unsigned int> image) {
 	this->audioBuffer = new short[numSamples];
 	amplitudes = new double[numParts];
 	frequencies = new double[numParts]; // each value in [20, 20000]
-	double fundamental = 20.0f;
+
 	double freq;
 	for (int i=0; i<numParts; i++){
-		freq = fundamental * efScale(numParts, i);
+		freq = FUNDAMENTAL * efScale(numParts, i);
 		amplitudes[i] = 0.0f;
 		frequencies[numParts-i-1] = freq;
 	}

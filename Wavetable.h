@@ -12,6 +12,8 @@
 #include <string.h>
 #include <errno.h>
 
+#define FUNDAMENTAL 20.0f
+
 using namespace std;
 using namespace cimg_library;
 
