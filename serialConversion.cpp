@@ -33,13 +33,8 @@ int main(int argc, char **argv){
 	}	
 	CImg<unsigned int> input(argv[1]);
 
-<<<<<<< HEAD
-    ImageWaveConverter myConverter(timestep, gain, input);
-    myConverter.convert(argv[2]);
-=======
     Wavetable w(timestep, gain, input);
     w.writeAudio(argv[2]);
->>>>>>> master
 	
 	return 0;
 }
