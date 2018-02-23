@@ -28,7 +28,7 @@ double eScale(int h, int i){
 
 //Linear Scaling between 1 and 1000 for startpoint 0 and endpoint h-1
 double lScale(int h, int i){
-	return double(i) * 1000.0f / double(h) + 1.0f;
+	return double(i) * 999.0f / double(h) + 1.0f;
 }
 
 int main(int argc, char **argv){
