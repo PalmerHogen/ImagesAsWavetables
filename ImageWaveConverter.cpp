@@ -60,18 +60,12 @@ void ImageWaveConverter::convert(char *path) {
     
     int progress_thresh=image.width()/100+1;
     cout << "[";
-    for (int i = 0; i < 100; i++) {
-        cout << ' ';
-    }
     cout << "]\b";
-    for (int i = 0; i < 100; i++) {
-        cout << '\b';
-    }
     cout.flush(); 
 
  	for(int j=0; j<(image.width()); j++){
         if (j % progress_thresh == 0) {
-            cout << ".";
+            cout << ".]\b";
             cout.flush();
         }
 		for (int k=0; k<numParts; k++){
