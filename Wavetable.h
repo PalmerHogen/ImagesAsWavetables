@@ -22,8 +22,8 @@ class Wavetable {
     double lfScale(int h, int i);
     double brightness(CImg<unsigned int> img, int i, int j);
 
-	int cycle_length, timestep, numParts;
-    long numSamples;
+	int cycle_length, timestep, bandCount;
+    long buffer_length;
     double gain, invH, invC;
     CImg<unsigned int> image;
     double *sinu;
@@ -34,5 +34,5 @@ class Wavetable {
 public:
     Wavetable(int timestep, double gain, CImg<unsigned int> image);
     ~Wavetable();
-    void generateFromImage(char *path);
+    void writeAudio(char *path);
 };

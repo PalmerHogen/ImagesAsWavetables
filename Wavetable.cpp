@@ -22,11 +22,11 @@ Wavetable::Wavetable(int timestep, double gain, CImg<unsigned int> image) {
     this->timestep = timestep;
     this->image = image;
     this->gain = gain;
-    this->numSamples = (cycle_length * timestep) / 1000;
-    this->numParts = image.height();
+    this->buffer_length = (SAMPLERATE * timestep) / 1000;
+    this->bandCount = image.height();
     //Optimizations: -----------------------------------------------
 	//Floating point division is slow; so I'll do these upfront
-	this->invH = 1.0f / numParts;
+	this->invH = 1.0f / bandCount;
 	this->invC = 1.0f / cycle_length;	
 
 	//math.sin() is also slow
@@ -36,15 +36,15 @@ Wavetable::Wavetable(int timestep, double gain, CImg<unsigned int> image) {
 	}
 	//--------------------------------------------------------------
 	//Intermediate audio-write buffers
-	this->audioBuffer = new short[numSamples];
-	amplitudes = new double[numParts];
-	frequencies = new double[numParts]; // each value in [20, 20000]
+	this->audioBuffer = new short[buffer_length];
+	amplitudes = new double[bandCount];
+	frequencies = new double[bandCount]; // each value in [20, 20000]
 
 	double freq;
-	for (int i=0; i<numParts; i++){
-		freq = FUNDAMENTAL * efScale(numParts, i);
+	for (int i=0; i<bandCount; i++){
+		freq = FUNDAMENTAL * efScale(bandCount, i);
 		amplitudes[i] = 0.0f;
-		frequencies[numParts-i-1] = freq;
+		frequencies[bandCount-i-1] = freq;
 	}
 }
 
@@ -55,7 +55,7 @@ Wavetable::~Wavetable() {
 	delete [] audioBuffer;
 }
 
-void Wavetable::generateFromImage(char *path) {
+void Wavetable::writeAudio(char *path) {
 	FILE *f = openWav(path); //prepares .wav format header 
     
     int progress_thresh=image.width()/100+1;
@@ -68,19 +68,19 @@ void Wavetable::generateFromImage(char *path) {
             cout << ".]\b";
             cout.flush();
         }
-		for (int k=0; k<numParts; k++){
+		for (int k=0; k<bandCount; k++){
 			amplitudes[k] = brightness(image, j, k)*gain*invH;
 		}
-		for (int A=0; A<numSamples; A++){
+		for (int A=0; A<buffer_length; A++){
 			double spl = 0.0f;
-			long pos = j * numSamples + A;
-			for (int l=0; l<numParts; l++){
+			long pos = j * buffer_length + A;
+			for (int l=0; l<bandCount; l++){
 				spl += amplitudes[l]*sinu[long(frequencies[l]*pos)%cycle_length]; 
 			}
 			audioBuffer[A] = spl;
 		}
 		//write intermediate results
-		writeWav(f, audioBuffer, numSamples);
+		writeWav(f, audioBuffer, buffer_length);
 	}
     cout << endl;
 	closeWav(f);

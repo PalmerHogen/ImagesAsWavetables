@@ -34,7 +34,7 @@ int main(int argc, char **argv){
 	CImg<unsigned int> input(argv[1]);
 
     Wavetable w(timestep, gain, input);
-    w.generateFromImage(argv[2]);
+    w.writeAudio(argv[2]);
 	
 	return 0;
 }
