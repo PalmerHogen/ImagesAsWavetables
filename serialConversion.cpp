@@ -27,6 +27,10 @@ double T(int h, int i){
 	//return 1000.0f/h * i + 1;
 }
 
+double linInterp(int h, int i){
+	return 999.0f/h*i+1;
+}
+
 int main(int argc, char **argv){
 	int SAMPLERATE = SAMPLES_PER_SECOND;
 
