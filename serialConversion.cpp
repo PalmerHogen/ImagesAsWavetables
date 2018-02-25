@@ -9,6 +9,7 @@
 #include <time.h>
 #include <string.h>
 #include <errno.h>
+#include <chrono>
 #include "Wavetable.h"
 
 using namespace std;
@@ -34,7 +35,13 @@ int main(int argc, char **argv){
 	CImg<unsigned int> input(argv[1]);
 
     Wavetable w(timestep, gain, input);
+    auto t1 = std::chrono::high_resolution_clock::now();
     w.writeAudio(argv[2]);
+    auto t2 = std::chrono::high_resolution_clock::now();
+    std::cout << "Audio Write took: "
+              << std::chrono::duration_cast<std::chrono::milliseconds>(t2-t1).count()
+              << " milliseconds\n";
+    
 	
 	return 0;
 }
