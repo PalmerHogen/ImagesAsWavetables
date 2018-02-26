@@ -1,4 +1,5 @@
 #include "Wavetable.h"
+#include <chrono>
 
 using namespace std;
 using namespace cimg_library;
@@ -69,14 +70,18 @@ Wavetable::~Wavetable() {
 }
 
 void Wavetable::writeAudio(char *path) {
+
 	FILE *f = openWav(path); //prepares .wav format header 
-    
+
     int progress_thresh=image.width()/100+1;
     cout << "[";
     cout << "]\b";
     cout.flush(); 
-
+  
+    double audioTime = 0; 
+    double writeTime = 0;
  	for(int j=0; j<(image.width()); j++){
+
         if (j % progress_thresh == 0) {
             cout << ".]\b";
             //cout << j << " ]\b";
@@ -85,6 +90,8 @@ void Wavetable::writeAudio(char *path) {
 		for (int k=0; k<bandCount; k++){
 			amplitudes[k] = brightness(j, k)*gain*invH;
 		}
+		
+		auto t1 = std::chrono::high_resolution_clock::now();
 		for (int A=0; A<buffer_length; A++){
 			double spl = 0.0f;
 			long pos = j * buffer_length + A;
@@ -93,9 +100,24 @@ void Wavetable::writeAudio(char *path) {
 			}
 			audioBuffer[A] = spl;
 		}
+		auto t2 = std::chrono::high_resolution_clock::now();
+		audioTime += std::chrono::duration_cast<std::chrono::milliseconds>(t2 - t1).count();
 		//write intermediate results
+		t1 = std::chrono::high_resolution_clock::now();
 		writeWav(f, audioBuffer, buffer_length);
+		t2 = std::chrono::high_resolution_clock::now();
+		writeTime += std::chrono::duration_cast<std::chrono::milliseconds>(t2 - t1).count();
+		 
 	}
+    
     cout << endl;
+    std::cout << "Audio loop took: "
+              << audioTime
+              << " milliseconds\n";
+    std::cout << "Write took: "
+              << writeTime
+              << " milliseconds\n"; 
+       
 	closeWav(f);
+
 }
