@@ -17,6 +17,11 @@ double Wavetable::lfScale(int h, int i){
 	return 999.0f/h*i+1;
 }
 
+double Wavetable::nfScale(int h, int i){
+	double n = pow(1000.0f, (1.0f/double(h-1)));
+	return pow(n, double(i));
+}
+
 Wavetable::Wavetable(int timestep, double gain, CImg<unsigned int> image) {
     this->cycle_length = SAMPLERATE;
     this->timestep = timestep;
@@ -30,26 +35,26 @@ Wavetable::Wavetable(int timestep, double gain, CImg<unsigned int> image) {
 	this->invC = 1.0f / cycle_length;	
 
 	//math.sin() is also slow
-	sinu = new double[cycle_length];
+	this->sine = new double[cycle_length];
 	for (int b=0; b<cycle_length; b++){
-		sinu[b] = sin(2*M_PI*b*invC);
+		this->sine[b] = sin(2*M_PI*b*invC);
 	}
 	//--------------------------------------------------------------
 	//Intermediate audio-write buffers
 	this->audioBuffer = new short[buffer_length];
-	amplitudes = new double[bandCount];
-	frequencies = new double[bandCount]; // each value in [20, 20000]
+	this->amplitudes = new double[bandCount];
+	this->frequencies = new double[bandCount]; // each value in [20, 20000]
 
 	double freq;
 	for (int i=0; i<bandCount; i++){
-		freq = FUNDAMENTAL * efScale(bandCount, i);
-		amplitudes[i] = 0.0f;
-		frequencies[bandCount-i-1] = freq;
+		freq = FUNDAMENTAL * nfScale(bandCount, i);
+		this->amplitudes[i] = 0.0f;
+		this->frequencies[bandCount-i-1] = freq;
 	}
 }
 
 Wavetable::~Wavetable() {
-	delete [] sinu;
+	delete [] sine;
 	delete [] frequencies;
 	delete [] amplitudes;
 	delete [] audioBuffer;
@@ -75,7 +80,7 @@ void Wavetable::writeAudio(char *path) {
 			double spl = 0.0f;
 			long pos = j * buffer_length + A;
 			for (int l=0; l<bandCount; l++){
-				spl += amplitudes[l]*sinu[long(frequencies[l]*pos)%cycle_length]; 
+				spl += amplitudes[l]*sine[long(frequencies[l]*pos)%cycle_length]; 
 			}
 			audioBuffer[A] = spl;
 		}

@@ -9,7 +9,7 @@
 			"modernui" : 1
 		}
 ,
-		"rect" : [ 233.0, 79.0, 384.0, 310.0 ],
+		"rect" : [ 581.0, 79.0, 467.0, 337.0 ],
 		"bglocked" : 0,
 		"openinpresentation" : 0,
 		"default_fontsize" : 12.0,
@@ -113,7 +113,9 @@
 					"numinlets" : 1,
 					"numoutlets" : 1,
 					"outlettype" : [ "int" ],
+					"parameter_enable" : 0,
 					"patching_rect" : [ 216.0, 84.0, 24.0, 24.0 ],
+					"presentation" : 1,
 					"presentation_rect" : [ 14.0, 15.0, 86.0, 86.0 ],
 					"style" : "",
 					"varname" : "toggle"
@@ -150,6 +152,7 @@
 				"box" : 				{
 					"domain" : [ 20.0, 20000.0 ],
 					"id" : "obj-2",
+					"logfreq" : 1,
 					"maxclass" : "spectroscope~",
 					"monochrome" : 0,
 					"numinlets" : 2,
@@ -309,10 +312,6 @@
 
 			}
  ],
-		"parameters" : 		{
-
-		}
-,
 		"dependency_cache" : [  ],
 		"embedsnapshot" : 0
 	}

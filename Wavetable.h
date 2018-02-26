@@ -20,13 +20,14 @@ using namespace cimg_library;
 class Wavetable {
     double efScale(int h, int i);
     double lfScale(int h, int i);
+    double nfScale(int h, int i);
     double brightness(CImg<unsigned int> img, int i, int j);
 
 	int cycle_length, timestep, bandCount;
     long buffer_length;
     double gain, invH, invC;
     CImg<unsigned int> image;
-    double *sinu;
+    double *sine;
     short *audioBuffer;
     double *amplitudes;
     double *frequencies;
