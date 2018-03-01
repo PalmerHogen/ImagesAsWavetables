@@ -1,4 +1,5 @@
 #include "Wavetable.h"
+#include <pthread.h>
 
 using namespace std;
 using namespace cimg_library;
@@ -10,13 +11,14 @@ double Wavetable::brightness(CImg<unsigned int> img, int i, int j){
 
 //Exponential Scaling between 1 and 1000 for startpoint 0 and endpoint h-1
 double Wavetable::efScale(int h, int i){
-	return double(i*i) * 1000.0f / double(h*h) + 1.0f;
+	return double(i*i) * 999.0f / double(h*h) + 1.0f;
 }
-
+//Linear Scaling between 1 and 1000 for startpoint 0 and end endpoint h-1
 double Wavetable::lfScale(int h, int i){
 	return 999.0f/h*i+1;
 }
 
+//non-linear anti-logarithmic scale between 1 and 1000 for startpoint 0 and endpoint h-1
 double Wavetable::nfScale(int h, int i){
 	double n = pow(1000.0f, (1.0f/double(h-1)));
 	return pow(n, double(i));
@@ -75,6 +77,7 @@ void Wavetable::writeAudio(char *path) {
         }
 		for (int k=0; k<bandCount; k++){
 			amplitudes[k] = brightness(image, j, k)*gain*invH;
+
 		}
 		for (int A=0; A<buffer_length; A++){
 			double spl = 0.0f;
