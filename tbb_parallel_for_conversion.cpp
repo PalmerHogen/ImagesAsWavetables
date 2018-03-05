@@ -4,6 +4,7 @@
 #include <chrono>
 #include <stdio.h>
 #include <stdlib.h>
+#include <cstdlib>
 #include <iostream>
 #include <cmath>
 #include <math.h>
@@ -17,6 +18,7 @@
 
 using namespace std;
 using namespace cimg_library;
+typedef chrono::high_resolution_clock Clock;
 
 int main(int argc, char **argv){
 
@@ -36,7 +38,6 @@ int main(int argc, char **argv){
 		exit(1);
 	}	
 
-
 /* Unused, I'm going to implement parallel for first before tasking 
     int numthreads = tbb::task_scheduler_init::default_num_threads();
     tbb::task_scheduler_init init(numthreads);
@@ -47,7 +48,11 @@ int main(int argc, char **argv){
 	CImg<unsigned int> input(argv[1]);
 
     Wavetable w(timestep, gain, input);
+    auto precomp = Clock::now();
     w.writeAudioParallelFor(argv[2]);
+    auto postcomp = Clock::now();
+    chrono::milliseconds mscomp = chrono::duration_cast<chrono::milliseconds>(postcomp-precomp);
+    cout << "Time: " << mscomp.count() << endl;
 	
 	return 0;
 }

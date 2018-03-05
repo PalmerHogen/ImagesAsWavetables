@@ -10,4 +10,4 @@ CONVERTTBB: tbb_parallel_for_conversion.cpp WAV.c Wavetable.cpp Wavetable.h
 	$(CXX) $(CFLAGS) tbb_parallel_for_conversion.cpp WAV.c Wavetable.cpp -o CONVERTTBB
 
 clean:
-	rm -rf CONVERT CONVERT.dSYM
+	rm -rf CONVERT CONVERT.dSYM CONVERTTBB CONVERTTBB.dSYM

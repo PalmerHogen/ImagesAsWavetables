@@ -30,6 +30,7 @@ Wavetable::Wavetable(int timestep, double gain, CImg<unsigned int> image) {
     this->image = image;
     this->gain = gain;
     this->buffer_length = (SAMPLERATE * timestep) / 1000;
+    this->full_buffer_length = buffer_length * image.width();
     this->bandCount = image.height();
     //Optimizations: -----------------------------------------------
 	//Floating point division is slow; so I'll do these upfront
@@ -44,8 +45,17 @@ Wavetable::Wavetable(int timestep, double gain, CImg<unsigned int> image) {
 	//--------------------------------------------------------------
 	//Intermediate audio-write buffers
 	this->audioBuffer = new short[buffer_length];
+	this->fullAudioBuffer = new short[full_buffer_length];
 	this->amplitudes = new double[bandCount];
+	this->fullAmplitudes = new double[bandCount*image.width()];
 	this->frequencies = new double[bandCount]; // each value in [20, 20000]
+
+    for(int i=0; i < full_buffer_length; i++) {
+        fullAudioBuffer[i] = 0;
+    }
+    for(int i=0; i < bandCount*image.width(); i++) {
+        fullAmplitudes[i] = 0;
+    }
 
 	double freq;
 	for (int i=0; i<bandCount; i++){
@@ -102,6 +112,27 @@ void Wavetable::writeAudioParallelFor(char *path) {
     cout << "]\b";
     cout.flush(); 
 
+    tbb::parallel_for(size_t(0), size_t(image.width()), [&](size_t j) {
+        int full_buffer_offset = buffer_length * j;
+        int full_amplitudes_offset = bandCount * j;
+        if (j % progress_thresh == 0) {
+            cout << ".]\b";
+            cout.flush();
+        }
+		for (int k=0; k<bandCount; k++){
+			fullAmplitudes[k+full_amplitudes_offset] = brightness(image, j, k)*gain*invH;
+
+		}
+		for (int A=0; A<buffer_length; A++){
+			double spl = 0.0f;
+			long pos = j * buffer_length + A;
+			for (int l=0; l<bandCount; l++){
+				spl += fullAmplitudes[l+full_amplitudes_offset]*sine[long(frequencies[l]*pos)%cycle_length]; 
+			}
+			fullAudioBuffer[A+full_buffer_offset] = spl;
+		}
+	});
+/*
  	for(int j=0; j<(image.width()); j++){
         if (j % progress_thresh == 0) {
             cout << ".]\b";
@@ -120,8 +151,10 @@ void Wavetable::writeAudioParallelFor(char *path) {
 			audioBuffer[A] = spl;
 		});
 		//write intermediate results
-		writeWav(f, audioBuffer, buffer_length);
+		//writeWav(f, audioBuffer, buffer_length);
 	}
+*/
+    writeWav(f, fullAudioBuffer, full_buffer_length);
     cout << endl;
 	closeWav(f);
 }

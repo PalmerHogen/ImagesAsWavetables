@@ -3,6 +3,8 @@
 #include "WAV.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <chrono>
+#include <cstdlib>
 #include <iostream>
 #include <cmath>
 #include <math.h>
@@ -13,6 +15,7 @@
 
 using namespace std;
 using namespace cimg_library;
+typedef chrono::high_resolution_clock Clock;
 
 int main(int argc, char **argv){
 
@@ -31,10 +34,15 @@ int main(int argc, char **argv){
 		cout << "Must enter a non-zero gain" << endl;
 		exit(1);
 	}	
+
 	CImg<unsigned int> input(argv[1]);
 
     Wavetable w(timestep, gain, input);
+    auto precomp = Clock::now();
     w.writeAudio(argv[2]);
+    auto postcomp = Clock::now();
+	chrono::milliseconds mscomp = chrono::duration_cast<chrono::milliseconds>(postcomp-precomp);
+    cout << "Time: " << mscomp.count() << endl;
 	
 	return 0;
 }

@@ -29,13 +29,15 @@ class Wavetable {
     double brightness(CImg<unsigned int> img, int i, int j);
 
 	int cycle_length, timestep, bandCount;
-    long buffer_length;
+    long buffer_length, full_buffer_length;
     double gain, invH, invC;
     CImg<unsigned int> image;
     double *sine;
     short *audioBuffer;
     double *amplitudes;
+    double *fullAmplitudes;
     double *frequencies;
+    short *fullAudioBuffer;
     
 public:
     Wavetable(int timestep, double gain, CImg<unsigned int> image);
