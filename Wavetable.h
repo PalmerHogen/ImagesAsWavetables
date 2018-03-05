@@ -11,6 +11,11 @@
 #include <time.h>
 #include <string.h>
 #include <errno.h>
+//TBB includes
+#include "tbb/tbb.h"
+#include "tbb/parallel_for.h"
+#include "tbb/blocked_range.h"
+
 
 #define FUNDAMENTAL 20.0f
 
@@ -36,4 +41,5 @@ public:
     Wavetable(int timestep, double gain, CImg<unsigned int> image);
     ~Wavetable();
     void writeAudio(char *path);
+    void writeAudioParallelFor(char *path);
 };

@@ -93,3 +93,37 @@ void Wavetable::writeAudio(char *path) {
     cout << endl;
 	closeWav(f);
 }
+
+void Wavetable::writeAudioParallelFor(char *path) {
+	FILE *f = openWav(path); //prepares .wav format header 
+    
+    int progress_thresh=image.width()/100+1;
+    cout << "[";
+    cout << "]\b";
+    cout.flush(); 
+
+ 	for(int j=0; j<(image.width()); j++){
+        if (j % progress_thresh == 0) {
+            cout << ".]\b";
+            cout.flush();
+        }
+        tbb::parallel_for(size_t(0), size_t(bandCount), [&](size_t k) {
+			amplitudes[k] = brightness(image, j, (int) k)*gain*invH;
+
+        });
+        tbb::parallel_for(size_t(0), size_t(buffer_length), [&](size_t A) {
+			double spl = 0.0f;
+			long pos = j * buffer_length + A;
+			for (int l=0; l<bandCount; l++){
+				spl += amplitudes[l]*sine[long(frequencies[l]*pos)%cycle_length]; 
+			}
+			audioBuffer[A] = spl;
+		});
+		//write intermediate results
+		writeWav(f, audioBuffer, buffer_length);
+	}
+    cout << endl;
+	closeWav(f);
+}
+
+
