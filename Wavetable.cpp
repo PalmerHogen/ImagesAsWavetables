@@ -6,8 +6,7 @@ using namespace cimg_library;
 
 //Pixel Brightness, in range 0-1000
 double Wavetable::brightness(CImg<unsigned int> img, int i, int j){
-	return (img(i, j, 0) + img(i, j, 1) + img(i, j, 2))*1.3f;
-}
+	return (img(i, j, 0) + img(i, j, 1) + img(i, j, 2))*1.3f; }
 
 //Exponential Scaling between 1 and 1000 for startpoint 0 and endpoint h-1
 double Wavetable::efScale(int h, int i){
@@ -115,10 +114,12 @@ void Wavetable::writeAudioParallelFor(char *path) {
     tbb::parallel_for(size_t(0), size_t(image.width()), [&](size_t j) {
         int full_buffer_offset = buffer_length * j;
         int full_amplitudes_offset = bandCount * j;
+/*
         if (j % progress_thresh == 0) {
             cout << ".]\b";
             cout.flush();
         }
+*/
 		for (int k=0; k<bandCount; k++){
 			fullAmplitudes[k+full_amplitudes_offset] = brightness(image, j, k)*gain*invH;
 
