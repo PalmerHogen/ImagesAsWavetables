@@ -25,7 +25,7 @@ class Wavetable {
 
 	int cycle_length, timestep, bandCount;
     long buffer_length;
-    double gain, invH, invC;
+    double invH, invC;
     CImg<unsigned int> image;
     double *sine;
     short *audioBuffer;
@@ -33,7 +33,7 @@ class Wavetable {
     double *frequencies;
     
 public:
-    Wavetable(int timestep, double gain, CImg<unsigned int> image);
+    Wavetable(int timestep, CImg<unsigned int> image);
     ~Wavetable();
     void writeAudio(char *path);
 };

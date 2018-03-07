@@ -3,8 +3,8 @@ CXX=g++
 
 default: CONVERT
 
-CONVERT: serialConversion.cpp WAV.c Wavetable.cpp Wavetable.h
-	$(CXX) $(CFLAGS) serialConversion.cpp WAV.c Wavetable.cpp -o CONVERT 
+CONVERT: convert.cpp WAV.c Wavetable.cpp Wavetable.h
+	$(CXX) $(CFLAGS) convert.cpp WAV.c Wavetable.cpp -o CONVERT 
 
 clean:
 	rm -rf CONVERT CONVERT.dSYM
