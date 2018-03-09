@@ -5,7 +5,7 @@ CXX=g++ -m64
 #ISPCFLAGS= -O2 --arch=x86-64 --target=sse2 --math-lib=system
 ISPCFLAGS=--arch=x86-64 --target=avx --math-lib=system
 
-default: CONVERT CONVERTTBB CONVERT2 CONVERTTBB2 CONVERTTBBISPC
+default: wavetable-ispc CONVERT CONVERTTBB CONVERT2 CONVERTTBB2 CONVERTTBBISPC
 
 CONVERT: serialConversion.cpp WAV.c Wavetable.cpp Wavetable.h
 	$(CXX) $(CFLAGS) serialConversion.cpp WAV.c Wavetable.cpp Wavetable_ispc.o -o CONVERT 
