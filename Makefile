@@ -1,5 +1,6 @@
 CFLAGS=-std=c++11 -g -lm -I/opt/X11/include -L/opt/X11/lib -lX11 -ljpeg -lpthread -w -ltbb
 CXX=g++
+ISPCFLAGS=--arch=x86_64 --target=sse2 --math-lib=system
 
 default: CONVERT CONVERTTBB CONVERT2 CONVERTTBB2 CONVERTTBBISPC
 

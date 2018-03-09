@@ -107,21 +107,9 @@ void Wavetable::writeAudio(char *path) {
 void Wavetable::writeAudioParallelFor(char *path) {
 	FILE *f = openWav(path); //prepares .wav format header 
     
-    int progress_thresh=image.width()/100+1;
-    cout << "[";
-    cout << "]\b";
-    cout.flush(); 
-
     tbb::parallel_for(size_t(0), size_t(image.width()), [&](size_t j) {
         int full_buffer_offset = buffer_length * j;
         int full_amplitudes_offset = bandCount * j;
-
-        int r_offset = 0;
-        int g_offset = image.width()*bandCount;
-        int b_offset = 2*g_offset;
-        unsigned char* imgr = imageData + r_offset;
-        unsigned char* imgg = imageData + g_offset;
-        unsigned char* imgb = imageData + b_offset;
 		for (int k=0; k<bandCount; k++){
 			fullAmplitudes[k+full_amplitudes_offset] = brightness(image, j, k)*gain*invH;
 		}
@@ -142,11 +130,6 @@ void Wavetable::writeAudioParallelFor(char *path) {
 void Wavetable::writeAudioParallelForIspc(char *path) {
 	FILE *f = openWav(path); //prepares .wav format header 
     
-    int progress_thresh=image.width()/100+1;
-    cout << "[";
-    cout << "]\b";
-    cout.flush(); 
-
     tbb::parallel_for(size_t(0), size_t(image.width()), [&](size_t j) {
         int full_buffer_offset = buffer_length * j;
         int full_amplitudes_offset = bandCount * j;
