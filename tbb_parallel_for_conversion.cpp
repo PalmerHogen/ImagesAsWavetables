@@ -45,7 +45,7 @@ int main(int argc, char **argv){
     tbb::task_group g;
 */
 
-	CImg<unsigned int> input(argv[1]);
+	CImg<unsigned char> input(argv[1]);
 
     Wavetable w(timestep, gain, input);
     auto precomp = Clock::now();
