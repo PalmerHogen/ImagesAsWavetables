@@ -7,7 +7,8 @@ using namespace cimg_library;
 
 //Pixel Brightness, in range 0-1000
 double Wavetable::brightness(CImg<unsigned char> img, int i, int j){
-	return (img(i, j, 0) + img(i, j, 1) + img(i, j, 2))*1.3f; }
+	return (double)(img(i, j, 0) + img(i, j, 1) + img(i, j, 2))*1.3f;
+}
 
 //Exponential Scaling between 1 and 1000 for startpoint 0 and endpoint h-1
 double Wavetable::efScale(int h, int i){
@@ -115,7 +116,7 @@ void Wavetable::writeAudioParallelFor(char *path) {
 		}
 		for (int A=0; A<buffer_length; A++){
 			double spl = 0.0f;
-			long pos = j * buffer_length + A;
+			long pos = (int)j * buffer_length + A;
 			for (int l=0; l<bandCount; l++){
 				spl += fullAmplitudes[l+full_amplitudes_offset]*sine[long(frequencies[l]*pos)%cycle_length]; 
 			}
@@ -140,10 +141,10 @@ void Wavetable::writeAudioParallelForIspc(char *path) {
         unsigned char* imgr = imageData + r_offset;
         unsigned char* imgg = imageData + g_offset;
         unsigned char* imgb = imageData + b_offset;
-        ispc::computeAmplitudes(fullAmplitudes, imgr, imgg, imgb, gain, invH, full_amplitudes_offset, j, image.width(), bandCount); 
+        ispc::computeAmplitudes(fullAmplitudes, imgr, imgg, imgb, gain, invH, full_amplitudes_offset, (int)j, (int)image.width(), bandCount); 
 		for (int A=0; A<buffer_length; A++){
 			double spl = 0.0f;
-			long pos = j * buffer_length + A;
+			long pos = (int)j * buffer_length + A;
 			for (int l=0; l<bandCount; l++){
 				spl += fullAmplitudes[l+full_amplitudes_offset]*sine[long(frequencies[l]*pos)%cycle_length]; 
 			}
