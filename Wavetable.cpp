@@ -28,7 +28,7 @@ Wavetable::Wavetable(int timestep, double gain, CImg<unsigned char> image) {
     this->cycle_length = SAMPLERATE;
     this->timestep = timestep;
     this->image = image;
-    this->imageData = image.data();
+    this->imageData = (this->image).data();
     this->gain = gain;
     this->buffer_length = (SAMPLERATE * timestep) / 1000;
     this->full_buffer_length = buffer_length * image.width();
@@ -108,8 +108,8 @@ void Wavetable::writeAudioParallelFor(char *path) {
 	FILE *f = openWav(path); //prepares .wav format header 
     
     tbb::parallel_for(size_t(0), size_t(image.width()), [&](size_t j) {
-        int full_buffer_offset = buffer_length * j;
-        int full_amplitudes_offset = bandCount * j;
+        int full_buffer_offset = buffer_length * (int)j;
+        int full_amplitudes_offset = bandCount * (int)j;
 		for (int k=0; k<bandCount; k++){
 			fullAmplitudes[k+full_amplitudes_offset] = brightness(image, j, k)*gain*invH;
 		}
@@ -131,8 +131,8 @@ void Wavetable::writeAudioParallelForIspc(char *path) {
 	FILE *f = openWav(path); //prepares .wav format header 
     
     tbb::parallel_for(size_t(0), size_t(image.width()), [&](size_t j) {
-        int full_buffer_offset = buffer_length * j;
-        int full_amplitudes_offset = bandCount * j;
+        int full_buffer_offset = buffer_length * (int)j;
+        int full_amplitudes_offset = bandCount * (int)j;
 
         int r_offset = 0;
         int g_offset = image.width()*bandCount;
