@@ -122,8 +122,42 @@ void Wavetable::writeAudioParallelFor(char *path) {
         unsigned char* imgr = imageData + r_offset;
         unsigned char* imgg = imageData + g_offset;
         unsigned char* imgb = imageData + b_offset;
-        ispc::computeAmplitudes(fullAmplitudes, imgr, imgg, imgb, gain, invH, full_amplitudes_offset, j, image.width(), bandCount); 
+		for (int k=0; k<bandCount; k++){
+			fullAmplitudes[k+full_amplitudes_offset] = brightness(image, j, k)*gain*invH;
+		}
+		for (int A=0; A<buffer_length; A++){
+			double spl = 0.0f;
+			long pos = j * buffer_length + A;
+			for (int l=0; l<bandCount; l++){
+				spl += fullAmplitudes[l+full_amplitudes_offset]*sine[long(frequencies[l]*pos)%cycle_length]; 
+			}
+			fullAudioBuffer[A+full_buffer_offset] = spl;
+		}
+	});
+    writeWav(f, fullAudioBuffer, full_buffer_length);
+    cout << endl;
+	closeWav(f);
+}
 
+void Wavetable::writeAudioParallelForIspc(char *path) {
+	FILE *f = openWav(path); //prepares .wav format header 
+    
+    int progress_thresh=image.width()/100+1;
+    cout << "[";
+    cout << "]\b";
+    cout.flush(); 
+
+    tbb::parallel_for(size_t(0), size_t(image.width()), [&](size_t j) {
+        int full_buffer_offset = buffer_length * j;
+        int full_amplitudes_offset = bandCount * j;
+
+        int r_offset = 0;
+        int g_offset = image.width()*bandCount;
+        int b_offset = 2*g_offset;
+        unsigned char* imgr = imageData + r_offset;
+        unsigned char* imgg = imageData + g_offset;
+        unsigned char* imgb = imageData + b_offset;
+        ispc::computeAmplitudes(fullAmplitudes, imgr, imgg, imgb, gain, invH, full_amplitudes_offset, j, image.width(), bandCount); 
 		for (int A=0; A<buffer_length; A++){
 			double spl = 0.0f;
 			long pos = j * buffer_length + A;

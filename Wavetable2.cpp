@@ -5,7 +5,7 @@ using namespace std;
 using namespace cimg_library;
 
 //Pixel Brightness, in range 0-1000
-double Wavetable::brightness(CImg<unsigned int> img, int i, int j){
+double Wavetable::brightness(CImg<unsigned char> img, int i, int j){
 	return (img(i, j, 0) + img(i, j, 1) + img(i, j, 2))*1.3f;
 }
 
@@ -24,7 +24,7 @@ double Wavetable::nfScale(int h, int i){
 	return pow(n, double(i));
 }
 
-Wavetable::Wavetable(int timestep, double gain, CImg<unsigned int> image) {
+Wavetable::Wavetable(int timestep, double gain, CImg<unsigned char> image) {
     this->cycle_length = SAMPLERATE;
     this->timestep = timestep;
     this->image = image;

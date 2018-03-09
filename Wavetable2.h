@@ -26,12 +26,12 @@ class Wavetable {
     double efScale(int h, int i);
     double lfScale(int h, int i);
     double nfScale(int h, int i);
-    double brightness(CImg<unsigned int> img, int i, int j);
+    double brightness(CImg<unsigned char> img, int i, int j);
 
 	int cycle_length, timestep, bandCount;
     long buffer_length, full_buffer_length;
     double gain, invH, invC;
-    CImg<unsigned int> image;
+    CImg<unsigned char> image;
     double *sine;
     short *audioBuffer;
     double *amplitudes;
@@ -40,7 +40,7 @@ class Wavetable {
     short *fullAudioBuffer;
     
 public:
-    Wavetable(int timestep, double gain, CImg<unsigned int> image);
+    Wavetable(int timestep, double gain, CImg<unsigned char> image);
     ~Wavetable();
     void writeAudio(char *path);
     void writeAudioParallelFor(char *path);

@@ -45,4 +45,5 @@ public:
     ~Wavetable();
     void writeAudio(char *path);
     void writeAudioParallelFor(char *path);
+    void writeAudioParallelForIspc(char *path);
 };
