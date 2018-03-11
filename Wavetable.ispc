@@ -8,6 +8,6 @@ export void computeAmplitudes(  uniform double amplitudes[],
 
         foreach (k = 0 ... bandCount) {
             int index = width * k + j;
-			amplitudes[(int)k+full_amplitudes_offset] = ((double)imgr[index] + (double)imgg[index] + (double)imgb[index])*1.3f*invH;
+			amplitudes[(int)k+full_amplitudes_offset] = ((double)imgr[index]*(double)imgr[index] + (double)imgg[index]*(double)imgg[index] + (double)imgb[index]*(double)imgb[index])/3*invH;
 		}
 }
