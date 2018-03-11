@@ -23,20 +23,16 @@ typedef chrono::high_resolution_clock Clock;
 int main(int argc, char **argv){
 
 	int Z = 0;
-	if (argc < 5){
-		cout << "Usage: ./CONVERT [image path] [output name] [timestep(ms)] [gain]"<<endl;
+	if (argc < 4){
+		cout << "Usage: ./CONVERT [image path] [output name] [timestep(ms)]"<<endl;
 		exit(2);
 	}
 	int timestep;
-	double gain;
 	if((timestep = atoi(argv[3])) < 10){
 		cout << "Must enter a timestep greater than 10 ms" <<endl;
 		exit(1);
 	}
-	if((gain = atof(argv[4])) <= 0.0f){
-		cout << "Must enter a non-zero gain" << endl;
-		exit(1);
-	}	
+		
 
 /* Unused, I'm going to implement parallel for first before tasking 
     int numthreads = tbb::task_scheduler_init::default_num_threads();
@@ -47,7 +43,7 @@ int main(int argc, char **argv){
 
 	CImg<unsigned char> input(argv[1]);
 
-    Wavetable w(timestep, gain, input);
+    Wavetable w(timestep, input);
     auto precomp = Clock::now();
     w.writeAudioParallelForIspc(argv[2]);
     auto postcomp = Clock::now();
