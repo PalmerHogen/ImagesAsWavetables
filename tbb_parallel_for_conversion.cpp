@@ -23,7 +23,7 @@ typedef chrono::high_resolution_clock Clock;
 int main(int argc, char **argv){
 
 	int Z = 0;
-	if (argc < 5){
+	if (argc < 4){
 		cout << "Usage: ./CONVERT [image path] [output name] [timestep(ms)]"<<endl;
 		exit(2);
 	}
