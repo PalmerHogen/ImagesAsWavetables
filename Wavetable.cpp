@@ -111,7 +111,7 @@ void Wavetable::writeAudioParallelFor(char *path) {
         int full_buffer_offset = buffer_length * (int)j;
         int full_amplitudes_offset = bandCount * (int)j;
 		for (int k=0; k<bandCount; k++){
-			fullAmplitudes[k+full_amplitudes_offset] = brightness(image, j, k)*gain*invH;
+			fullAmplitudes[k+full_amplitudes_offset] = brightness(image, j, k)*invH;
 		}
 		for (int A=0; A<buffer_length; A++){
 			double spl = 0.0f;
@@ -140,7 +140,11 @@ void Wavetable::writeAudioParallelForIspc(char *path) {
         unsigned char* imgr = imageData + r_offset;
         unsigned char* imgg = imageData + g_offset;
         unsigned char* imgb = imageData + b_offset;
-        ispc::computeAmplitudes(fullAmplitudes, imgr, imgg, imgb, gain, invH, full_amplitudes_offset, (int)j, (int)image.width(), bandCount); 
+        ispc::computeAmplitudes(fullAmplitudes, imgr, imgg, imgb, 
+				
+				
+				
+				, invH, full_amplitudes_offset, (int)j, (int)image.width(), bandCount); 
 		for (int A=0; A<buffer_length; A++){
 			double spl = 0.0f;
 			long pos = (int)j * buffer_length + A;
