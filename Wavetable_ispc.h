@@ -34,7 +34,7 @@ namespace ispc { /* namespace */
 #if defined(__cplusplus) && (! defined(__ISPC_NO_EXTERN_C) || !__ISPC_NO_EXTERN_C )
 extern "C" {
 #endif // __cplusplus
-    extern void computeAmplitudes(double * amplitudes, uint8_t * imgr, uint8_t * imgg, uint8_t * imgb, double invH, int32_t full_amplitudes_offset, int32_t j, int32_t width, int32_t bandCount);
+    extern void computeAmplitudes(double * amplitudes, uint8_t * imgr, uint8_t * imgg, uint8_t * imgb, double gain, double invH, int32_t full_amplitudes_offset, int32_t j, int32_t width, int32_t bandCount);
 #if defined(__cplusplus) && (! defined(__ISPC_NO_EXTERN_C) || !__ISPC_NO_EXTERN_C )
 } /* end extern C */
 #endif // __cplusplus
