@@ -38,7 +38,7 @@ int main(int argc, char **argv){
     w.writeAudio(argv[2]);
     auto postcomp = Clock::now();
 	chrono::milliseconds mscomp = chrono::duration_cast<chrono::milliseconds>(postcomp-precomp);
-    cout << "Time: " << mscomp.count() << endl;
+    cout << "Serial Time: " << mscomp.count()<<" ms" << endl;
 	
 	return 0;
 }
