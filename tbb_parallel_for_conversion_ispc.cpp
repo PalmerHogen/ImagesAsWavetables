@@ -48,7 +48,7 @@ int main(int argc, char **argv){
     w.writeAudioParallelForIspc(argv[2]);
     auto postcomp = Clock::now();
     chrono::milliseconds mscomp = chrono::duration_cast<chrono::milliseconds>(postcomp-precomp);
-    cout << "Time: " << mscomp.count() << endl;
+    cout << "TBB/ISPC Time: " << mscomp.count() <<" ms"<< endl;
 	
 	return 0;
 }
