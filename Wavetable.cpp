@@ -7,7 +7,7 @@ using namespace cimg_library;
 
 //Pixel Brightness, in range 0-1000
 double Wavetable::brightness(CImg<unsigned char> img, int i, int j){
-	return (double)(img(i, j, 0) + img(i, j, 1) + img(i, j, 2))*1.3f;
+	return (img(i, j, 0)*img(i, j, 0) + img(i, j, 1)*img(i, j, 1) + img(i, j, 2)*img(i, j, 2))/3;
 }
 
 //Exponential Scaling between 1 and 1000 for startpoint 0 and endpoint h-1
@@ -25,12 +25,11 @@ double Wavetable::nfScale(int h, int i){
 	return pow(n, double(i));
 }
 
-Wavetable::Wavetable(int timestep, double gain, CImg<unsigned char> image) {
+Wavetable::Wavetable(int timestep, CImg<unsigned char> image) {
     this->cycle_length = SAMPLERATE;
     this->timestep = timestep;
     this->image = image;
     this->imageData = (this->image).data();
-    this->gain = gain;
     this->buffer_length = (SAMPLERATE * timestep) / 1000;
     this->full_buffer_length = buffer_length * image.width();
     this->bandCount = image.height();
@@ -88,7 +87,7 @@ void Wavetable::writeAudio(char *path) {
             cout.flush();
         }
 		for (int k=0; k<bandCount; k++){
-			amplitudes[k] = brightness(image, j, k)*gain*invH;
+			amplitudes[k] = brightness(image, j, k)*invH;
 		}
 		for (int A=0; A<buffer_length; A++){
 			double spl = 0.0f;
