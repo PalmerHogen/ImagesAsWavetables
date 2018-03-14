@@ -6,8 +6,8 @@ using namespace cimg_library;
 
 //Linear interpolation between amplitudes to prevent missed zero-crossings
 double Wavetable::aLerp(int col, int h, int t){
-	double fract = (double) t / 100.0f;
-	if (t < 100){
+	double fract = (double) t / 50.0f;
+	if (t < 50){
 		if (col ==0){
 			return (fract) * amplitudes[this->image.width()*h + col];
 		}
