@@ -1,7 +1,24 @@
 #include "Wavetable.h"
+#include "SetMaps.h"
 
 using namespace std;
 using namespace cimg_library;
+
+//Linear interpolation between amplitudes to prevent missed zero-crossings
+double Wavetable::aLerp(int col, int h, int t){
+	double fract = (double) t / 50.0f;
+	if (t < 50){
+		if (col ==0){
+			return (fract) * amplitudes[this->image.width()*h + col];
+		}
+		else{
+			return (fract) * amplitudes[this->image.width()*h + col] + (1.0f - fract) * amplitudes[this->image.width()*h + col - 1];
+		}
+	}
+	else{
+		return amplitudes[this->image.width()*h + col];
+	}
+}
 
 //Pixel Brightness, in range 0-1000
 double Wavetable::brightness(CImg<unsigned int> img, int i, int j){
@@ -27,12 +44,14 @@ Wavetable::Wavetable(int timestep, CImg<unsigned int> image) {
     this->cycle_length = SAMPLERATE;
     this->timestep = timestep;
     this->image = image;
-    this->buffer_length = (SAMPLERATE * timestep) / 1000;
+    this->step_length = (SAMPLERATE * timestep) / 1000;
     this->bandCount = image.height();
     //Optimizations: -----------------------------------------------
 	//Floating point division is slow; so I'll do these upfront
 	this->invH = 1.0f / bandCount;
 	this->invC = 1.0f / cycle_length;	
+
+	this->imageData = (this->image).data();
 
 	//math.sin() is also slow
 	this->sine = new double[cycle_length];
@@ -41,16 +60,27 @@ Wavetable::Wavetable(int timestep, CImg<unsigned int> image) {
 	}
 	//--------------------------------------------------------------
 	//Intermediate audio-write buffers
-	this->audioBuffer = new short[buffer_length];
-	this->amplitudes = new double[bandCount];
+	this->audioBuffer = new short[step_length*image.width()];
+	this->amplitudes = new double[image.width()*bandCount];
 	this->frequencies = new double[bandCount]; // each value in [20, 20000]
 
 	double freq;
-	for (int i=0; i<bandCount; i++){
+	int i;
+	for (i=0; i<bandCount; i++){
 		freq = FUNDAMENTAL * nfScale(bandCount, i);
-		this->amplitudes[i] = 0.0f;
 		this->frequencies[bandCount-i-1] = freq;
 	}
+
+	int r_off, g_off, b_off;
+	r_off = 0;
+	g_off = image.width() * bandCount;
+	b_off = 2*g_off;
+
+	unsigned int *imgr, *imgg, *imgb;
+	imgr = imageData + r_off;
+	imgg = imageData + g_off;
+	imgb = imageData + b_off;
+	ispc::setAmps(amplitudes, imgr, imgg, imgb, invH, image.width(), bandCount);
 }
 
 Wavetable::~Wavetable() {
@@ -61,25 +91,17 @@ Wavetable::~Wavetable() {
 }
 
 void Wavetable::writeAudio(char *path) {
-	FILE *f = openWav(path); //prepares .wav format header 
-
-    cout.flush(); 
-
- 	for(int j=0; j<(image.width()); j++){
-		for (int k=0; k<bandCount; k++){
-			amplitudes[k] = brightness(image, j, k)*invH;
-		}
-		for (int A=0; A<buffer_length; A++){
+	tbb::parallel_for(size_t(0), size_t(image.width()), [&](size_t j) {
+		for (int A=0; A<step_length; A++){
 			double spl = 0.0f;
-			long pos = j * buffer_length + A;
+			long pos = j * step_length + A;
 			for (int l=0; l<bandCount; l++){
-				spl += amplitudes[l]*sine[long(frequencies[l]*pos)%cycle_length]; 
+				spl += aLerp(j, l, A)*sine[long(frequencies[l]*pos)%cycle_length]; 
 			}
-			audioBuffer[A] = spl;
+			audioBuffer[pos] = spl;
 		}
-		//write intermediate results
-		writeWav(f, audioBuffer, buffer_length);
-	}
-    cout << endl;
+	});
+	FILE *f = openWav(path);
+    writeWav(f, audioBuffer, step_length*image.width());
 	closeWav(f);
 }

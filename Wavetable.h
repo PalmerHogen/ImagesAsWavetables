@@ -12,6 +12,10 @@
 #include <string.h>
 #include <errno.h>
 
+#include "tbb/tbb.h"
+#include "tbb/parallel_for.h"
+#include "tbb/blocked_range.h"
+
 #define FUNDAMENTAL 20.0f
 
 using namespace std;
@@ -22,11 +26,13 @@ class Wavetable {
     double lfScale(int h, int i);
     double nfScale(int h, int i);
     double brightness(CImg<unsigned int> img, int i, int j);
+    double aLerp(int col, int h, int t);
 
 	int cycle_length, timestep, bandCount;
-    long buffer_length;
+    int step_length;
     double invH, invC;
     CImg<unsigned int> image;
+    unsigned int* imageData;
     double *sine;
     short *audioBuffer;
     double *amplitudes;
