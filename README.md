@@ -8,13 +8,12 @@ The relative volume of a frequency "y" at time "x" is determined by the brightne
 
 ### Dependencies
 
-Since this program makes use of vectorization and multithreading for efficiency purposes, it has dependencies. 
+This program depends on the Cool Image library in order to read images, the Intel SPMD program compiler for vectorization, and Thread Building Blocks for multithreading.
 
-You will need to install the Intel SPMD program compiler, and Thread Building Blocks.
-
-Using Homebrew,
+To install these dependencies using Homebrew,
 
 ```
+brew install cimg
 brew install ispc
 brew install tbb
 ``` 
