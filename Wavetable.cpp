@@ -1,13 +1,13 @@
 #include "Wavetable.h"
-#include "SetMaps.h"
+#include "ISPC_Maps.h"
 
 using namespace std;
 using namespace cimg_library;
 
 //Linear interpolation between amplitudes to prevent missed zero-crossings
 double Wavetable::aLerp(int col, int h, int t){
-	double fract = (double) t / 50.0f;
-	if (t < 50){
+	double fract = (double) t / 100.0f;
+	if (t < 100){
 		if (col ==0){
 			return (fract) * amplitudes[this->image.width()*h + col];
 		}
@@ -36,8 +36,7 @@ double Wavetable::lfScale(int h, int i){
 
 //non-linear anti-logarithmic scale between 1 and 1000 for startpoint 0 and endpoint h-1
 double Wavetable::nfScale(int h, int i){
-	double n = pow(1000.0f, (1.0f/double(h-1)));
-	return pow(n, double(i));
+	return pow(pow(1000.0f, (1.0f/double(h-1))), double(i));
 }
 
 Wavetable::Wavetable(int timestep, CImg<unsigned int> image) {
@@ -47,39 +46,36 @@ Wavetable::Wavetable(int timestep, CImg<unsigned int> image) {
     this->step_length = (SAMPLERATE * timestep) / 1000;
     this->bandCount = image.height();
     //Optimizations: -----------------------------------------------
-	//Floating point division is slow; so I'll do these upfront
+	//Floating point division is slow; so I'll create these constants upfront
 	this->invH = 1.0f / bandCount;
 	this->invC = 1.0f / cycle_length;	
 
 	this->imageData = (this->image).data();
 
-	//math.sin() is also slow
+	int r_off, g_off, b_off;
+	r_off = 0;
+	g_off = image.width() * bandCount;
+	b_off = 2*g_off;
+	//Extract RGB channels from image data
+	unsigned int *imgr, *imgg, *imgb;
+	imgr = imageData + r_off;
+	imgg = imageData + g_off;
+	imgb = imageData + b_off;
+
+	//math sin() is also relatively slow for large input value; 
+	//I would rather index into an arbitrarily accurate array
 	this->sine = new double[cycle_length];
 	for (int b=0; b<cycle_length; b++){
 		this->sine[b] = sin(2*M_PI*b*invC);
 	}
 	//--------------------------------------------------------------
-	//Intermediate audio-write buffers
+	//Audio-write buffers
 	this->audioBuffer = new short[step_length*image.width()];
 	this->amplitudes = new double[image.width()*bandCount];
 	this->frequencies = new double[bandCount]; // each value in [20, 20000]
 
-	double freq;
-	int i;
-	for (i=0; i<bandCount; i++){
-		freq = FUNDAMENTAL * nfScale(bandCount, i);
-		this->frequencies[bandCount-i-1] = freq;
-	}
-
-	int r_off, g_off, b_off;
-	r_off = 0;
-	g_off = image.width() * bandCount;
-	b_off = 2*g_off;
-
-	unsigned int *imgr, *imgg, *imgb;
-	imgr = imageData + r_off;
-	imgg = imageData + g_off;
-	imgb = imageData + b_off;
+	//Vectorized upfront Maps
+	ispc::setFreqs(frequencies, FUNDAMENTAL, bandCount);
 	ispc::setAmps(amplitudes, imgr, imgg, imgb, invH, image.width(), bandCount);
 }
 
@@ -91,6 +87,7 @@ Wavetable::~Wavetable() {
 }
 
 void Wavetable::writeAudio(char *path) {
+	//Threading across Columns
 	tbb::parallel_for(size_t(0), size_t(image.width()), [&](size_t j) {
 		for (int A=0; A<step_length; A++){
 			double spl = 0.0f;

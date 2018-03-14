@@ -1,13 +1,14 @@
-CFLAGS=-std=c++11 -g -lm -I/opt/X11/include -L/opt/X11/lib -lX11 -ljpeg -lpthread -w -ltbb
+CFLAGS=-std=c++11 -lm -I/opt/X11/include -L/opt/X11/lib -lX11 -ljpeg -lpthread -ltbb -w
 CXX=g++
+ICC=ispc
 
 default: CONVERT
 
-CONVERT: convert.cpp WAV.c Wavetable.cpp Wavetable.h SetMaps.o
-	$(CXX) $(CFLAGS) convert.cpp WAV.c Wavetable.cpp SetMaps.o -o CONVERT 
+CONVERT: convert.cpp WAV.c Wavetable.cpp Wavetable.h ISPC_Maps.o
+	$(CXX) convert.cpp WAV.c Wavetable.cpp ISPC_Maps.o -o CONVERT $(CFLAGS)
 
-SetMaps.o: SetMaps.ispc
-	./ispc -o SetMaps.o -h SetMaps.h SetMaps.ispc --quiet
+ISPC_Maps.o: ISPC_Maps.ispc
+	$(ICC) -o ISPC_Maps.o -h ISPC_Maps.h ISPC_Maps.ispc --quiet
 
 clean:
-	rm -rf CONVERT CONVERT.dSYM SetMaps.o SetMaps.h
+	rm -rf CONVERT CONVERT.dSYM ISPC_Maps.o ISPC_Maps.h
