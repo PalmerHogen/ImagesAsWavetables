@@ -14,10 +14,10 @@ You will need to install the Intel SPMD program compiler, and Thread Building Bl
 
 Using Homebrew,
 
-'''
+```
 brew install ispc
 brew install tbb
-''' 
+``` 
 
 ## Getting Started
 
@@ -25,9 +25,9 @@ To compile on a MacOS or Linux machine, use the provided makefile
 
 Once compiled, the program can be executed with
 
-'''
+```
 ./CONVERT [image] [audio] [time-step]
-'''
+```
 
 The program takes 3 arguments; the input filepath, output filepath, and a "time-step" value.
 
