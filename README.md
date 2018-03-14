@@ -1,4 +1,4 @@
-#Images As Wavetables
+# Images As Wavetables
 
 This Project explores relationships between images and sound and was inspired in part by the visionary work of musician Richard David James.
 
@@ -6,7 +6,7 @@ Images (.jpg) are transformed into playable audio (.wav) files by interpreting t
 
 The relative volume of a frequency "y" at time "x" is determined by the brightness value of the pixel at location (x,y).
 
-###Dependencies
+### Dependencies
 
 Since this program makes use of vectorization and multithreading for efficiency purposes, it has dependencies. 
 
@@ -19,7 +19,7 @@ brew install ispc
 brew install tbb
 ''' 
 
-##Getting Started
+## Getting Started
 
 To compile on a MacOS or Linux machine, use the provided makefile
 
