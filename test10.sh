@@ -1,14 +1,14 @@
 #!/bin/bash
 
-echo "Image: garden(500 × 500) with time step 10"
-./CONVERT images/garden.jpg audio/gardenSerial10.wav 10 
-./CONVERTTBB images/garden.jpg audio/gardenTBB10.wav 10 
-./CONVERTTBBISPC images/garden.jpg audio/gardenTBBISPC10.wav 10
+#echo "Image: garden(500 × 500) with time step 10"
+#./CONVERT images/garden.jpg audio/gardenSerial10.wav 10 
+#./CONVERTTBB images/garden.jpg audio/gardenTBB10.wav 10 
+#./CONVERTTBBISPC images/garden.jpg audio/gardenTBBISPC10.wav 10
 
-echo "Image: magic(1000 × 1000) with time step 10"
-./CONVERT images/magic.jpeg audio/magicSerial10.wav 10 
-./CONVERTTBB images/magic.jpeg audio/magicTBB10.wav 10 
-./CONVERTTBBISPC images/magic.jpeg audio/magicTBBISPC10.wav 10
+#echo "Image: magic(1000 × 1000) with time step 10"
+#./CONVERT images/magic.jpeg audio/magicSerial10.wav 10 
+#./CONVERTTBB images/magic.jpeg audio/magicTBB10.wav 10 
+#./CONVERTTBBISPC images/magic.jpeg audio/magicTBBISPC10.wav 10
 
 echo "Image: reef(1000 × 1500) with time step 10"
 ./CONVERT images/reef.jpeg audio/reefSerial10.wav 10 
@@ -20,10 +20,10 @@ echo "Image: moon(1500 × 1000) with time step 10"
 ./CONVERTTBB images/moon.jpg audio/moonTBB10.wav 10 
 ./CONVERTTBBISPC images/moon.jpg audio/moonTBBISPC10.wav 10
 
-echo "Image: universe(2000 × 2000) with time step 10"
-./CONVERT images/universe.jpg audio/universeSerial10.wav 10 
-./CONVERTTBB images/universe.jpg audio/universeTBB10.wav 10 
-./CONVERTTBBISPC images/universe.jpg audio/universeTBBISPC10.wav 10
+#echo "Image: universe(2000 × 2000) with time step 10"
+#./CONVERT images/universe.jpg audio/universeSerial10.wav 10 
+#./CONVERTTBB images/universe.jpg audio/universeTBB10.wav 10 
+#./CONVERTTBBISPC images/universe.jpg audio/universeTBBISPC10.wav 10
 
 
 # echo "Image: snowflake(640 × 640) time step 10"
