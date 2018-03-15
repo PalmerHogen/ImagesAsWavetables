@@ -7,6 +7,7 @@
 #include <cmath>
 #include <math.h>
 #include <time.h>
+#include <chrono>
 #include <string.h>
 #include <errno.h>
 #include "Wavetable.h"
@@ -28,8 +29,12 @@ int main(int argc, char **argv){
 	}
 	CImg<unsigned int> input(argv[1]);
 
+	auto start = chrono::system_clock::now();
     Wavetable w(timestep, input);
     w.writeAudio(argv[2]);
+    auto stop = chrono::system_clock::now();
+	auto elapsed = stop - start;
+	cout << chrono::duration <double, milli> (elapsed).count() << " ms" << endl;
 	
 	return 0;
 }
