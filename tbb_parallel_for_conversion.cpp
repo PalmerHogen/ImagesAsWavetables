@@ -43,8 +43,8 @@ int main(int argc, char **argv){
 
 	CImg<unsigned char> input(argv[1]);
 
-    Wavetable w(timestep, input);
     auto precomp = Clock::now();
+    Wavetable w(timestep, input);
     w.writeAudioParallelFor(argv[2]);
     auto postcomp = Clock::now();
     chrono::milliseconds mscomp = chrono::duration_cast<chrono::milliseconds>(postcomp-precomp);
