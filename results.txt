@@ -2,14 +2,17 @@ Image: garder(500 × 500) with time step 10
 Serial Time: 24653 ms, 24623 ms,24691 ms
 TBB Time: 3207 ms, 3259 ms, 3245 ms
 TBB/ISPC Time: 679 ms, 677 ms, 677 ms
+
 Image: magic(1000 × 1000) with time step 10
 Serial Time: 869105 ms, 858788 ms, 920078 ms
 TBB Time: 112131 ms, 120605 ms, 133175 ms
 TBB/ISPC Time: 2718, 2705 ms, 2718 ms
+
 Image: reef(1000 × 1500) with time step 10
 Serial Time: 2355284 ms, 2308690 ms, 2403820 ms
 TBB Time: 276459 ms, 268755 ms, 
 TBB/ISPC Time: 4068 ms, 4066 ms, 
+
 Image: moon(1500 × 1000) with time step 10
 Serial Time: 2575614 ms
 TBB Time: 267093 ms
