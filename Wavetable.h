@@ -1,4 +1,3 @@
-
 #define _USE_MATH_DEFINES
 #define cimg_use_jpeg
 #include "CImg.h"
