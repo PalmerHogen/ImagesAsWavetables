@@ -2,13 +2,13 @@ CFLAGS=-std=c++11 -lm -I/opt/X11/include -L/opt/X11/lib -lX11 -ljpeg -lpthread -
 CXX=g++
 ICC=ispc
 
-default: CONVERTTBBISPC2
+default: CONVERT
 
-CONVERTTBBISPC2: convert.cpp WAV.c Wavetable.cpp Wavetable.h ISPC_Maps.o
-	$(CXX) convert.cpp WAV.c Wavetable.cpp ISPC_Maps.o -o CONVERTTBBISPC2 $(CFLAGS)
+CONVERT: convert.cpp WAV.c Wavetable.cpp Wavetable.h ISPC_Maps.o
+	$(CXX) convert.cpp WAV.c Wavetable.cpp ISPC_Maps.o -o CONVERT $(CFLAGS)
 
 ISPC_Maps.o: ISPC_Maps.ispc
 	$(ICC) -o ISPC_Maps.o -h ISPC_Maps.h ISPC_Maps.ispc --quiet
 
 clean:
-	rm -rf CONVERTTBBISPC2 CONVERTTBBISPC2.dSYM ISPC_Maps.o ISPC_Maps.h
+	rm -rf CONVERT CONVERT.dSYM ISPC_Maps.o ISPC_Maps.h
