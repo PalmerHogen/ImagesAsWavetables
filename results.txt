@@ -1,19 +1,19 @@
 Image: garder(500 × 500) with time step 10
-Serial Time: 24653 ms, 24623 ms,24691 ms
-TBB Time: 3207 ms, 3259 ms, 3245 ms
-TBB/ISPC Time: 679 ms, 677 ms, 677 ms
+Serial Time: =(24653+24623+24691)/3
+TBB Time: =(3207+3259+3245)/3
+TBB/ISPC Time: =(679+677+677)/3
 
 Image: magic(1000 × 1000) with time step 10
-Serial Time: 869105 ms, 858788 ms, 920078 ms
-TBB Time: 112131 ms, 120605 ms, 133175 ms
-TBB/ISPC Time: 2718, 2705 ms, 2718 ms
+Serial Time: =(869105+858788+920078)/3
+TBB Time: =(112131+120605+133175)/3
+TBB/ISPC Time: =(2718+2705+2718)/3
 
 Image: reef(1000 × 1500) with time step 10
-Serial Time: 2355284 ms, 2308690 ms, 2403820 ms
-TBB Time: 276459 ms, 268755 ms, 
-TBB/ISPC Time: 4068 ms, 4066 ms, 
+Serial Time: =(2355284+2308690+2403820)/3
+TBB Time: =(276459+268755+269025)/3
+TBB/ISPC Time: =(4068+4066+4143)/3
 
 Image: moon(1500 × 1000) with time step 10
-Serial Time: 2575614 ms
-TBB Time: 267093 ms
-TBB/ISPC Time: 4178 ms
+Serial Time: =(2575614+2636498+2388983)/3
+TBB Time: =(267093+261782+262619)/3
+TBB/ISPC Time: =(4178+4083+4118)/3
