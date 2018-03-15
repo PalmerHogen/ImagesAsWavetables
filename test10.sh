@@ -10,15 +10,15 @@
 #./CONVERTTBB images/magic.jpeg audio/magicTBB10.wav 10 
 #./CONVERTTBBISPC images/magic.jpeg audio/magicTBBISPC10.wav 10
 
-#echo "Image: reef(1000 × 1500) with time step 10"
+echo "Image: reef(1000 × 1500) with time step 10"
 #./CONVERT images/reef.jpeg audio/reefSerial10.wav 10 
-#./CONVERTTBB images/reef.jpeg audio/reefTBB10.wav 10 
-#./CONVERTTBBISPC images/reef.jpeg audio/reefTBBISPC10.wav 10
+./CONVERTTBB images/reef.jpeg audio/reefTBB10.wav 10 
+./CONVERTTBBISPC images/reef.jpeg audio/reefTBBISPC10.wav 10
 
-#echo "Image: moon(1500 × 1000) with time step 10"
-#./CONVERT images/moon.jpg audio/moonSerial10.wav 10 
-#./CONVERTTBB images/moon.jpg audio/moonTBB10.wav 10 
-#./CONVERTTBBISPC images/moon.jpg audio/moonTBBISPC10.wav 10
+echo "Image: moon(1500 × 1000) with time step 10"
+./CONVERT images/moon.jpg audio/moonSerial10.wav 10 
+./CONVERTTBB images/moon.jpg audio/moonTBB10.wav 10 
+./CONVERTTBBISPC images/moon.jpg audio/moonTBBISPC10.wav 10
 
 #echo "Image: universe(2000 × 2000) with time step 10"
 #./CONVERT images/universe.jpg audio/universeSerial10.wav 10 
@@ -79,4 +79,4 @@
 echo "Image: planets(23520 × 4320) with time step 10"
 # ./CONVERT images/planets.jpg audio/planetsSerial10.wav 10 
 # ./CONVERTTBB images/planets.jpg audio/planetsTBB10.wav 10 
- ./CONVERTTBBISPC images/planets.jpg audio/planetsTBBISPC10.wav 10
+ #./CONVERTTBBISPC images/planets.jpg audio/planetsTBBISPC10.wav 10
